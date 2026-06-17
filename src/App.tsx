@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import { createHashRouter, RouterProvider, Navigate } from 'react-router-dom';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ROUTES, AUTH_KEYS } from './constants';
 import Toaster from './components/ui/Toaster';
@@ -27,7 +27,7 @@ const AnonymousOnly: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 };
 
 // Define client routes
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     path: ROUTES.LOGIN,
     element: (
