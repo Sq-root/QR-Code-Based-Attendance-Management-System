@@ -153,3 +153,24 @@ body {
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out forwards;
 }
+
+/* Hide html5-qrcode internal UI chrome so only the camera feed shows */
+#reader__dashboard,
+#reader__dashboard_section,
+#reader__dashboard_section_csr,
+#reader__header_message,
+#reader__camera_selection,
+#reader__scan_region > img,
+#reader__filescan_input {
+  display: none !important;
+}
+
+#reader {
+  border: none !important;
+}
+
+#reader video {
+  object-fit: cover !important;
+  width: 100% !important;
+  height: 100% !important;
+}

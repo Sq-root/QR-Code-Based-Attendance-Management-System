@@ -16,3 +16,8 @@ export const AUTH_KEYS = {
 export const API_ENDPOINTS = {
   LOGIN: '/auth/login', // Hooked up to mock system now, ready to replace once real endpoint is live
 } as const;
+
+export const SCANNER_CONFIG = {
+  fps: 10,
+  qrbox: { width: 250, height: 250 },
+} as const;

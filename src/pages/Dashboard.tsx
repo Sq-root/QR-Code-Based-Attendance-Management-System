@@ -140,7 +140,7 @@ export const Dashboard: React.FC = () => {
       <Sidebar onLogout={handleLogout} />
 
       {/* Top Header Bar for Mobile */}
-      <MobileHeader />
+      <MobileHeader onLogout={handleLogout} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col md:ml-64 min-w-0">
@@ -174,10 +174,8 @@ export const Dashboard: React.FC = () => {
             totalRegistered="1,248"
             presentToday={
               logs.filter((l) => l.status === "Success").length + 958
-            } // Dynamic presence count (26 initial + 958 = 984)
+            }
             attendanceRate="78.8%"
-            activeSessions="14 / 20"
-            sessionProgressPercentage={70}
           />
 
           {/* Quick Actions (Mobile emphasis, hidden on desktop) */}
