@@ -1,6 +1,6 @@
 import React from "react";
-import { Bell, LogOut } from "lucide-react";
-import { toast } from "sonner";
+import { LogOut } from "lucide-react";
+
 import { APP_NAME } from "../../constants";
 
 interface MobileHeaderProps {
