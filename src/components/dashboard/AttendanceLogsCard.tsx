@@ -38,7 +38,7 @@ export const AttendanceLogsCard: React.FC<AttendanceLogsCardProps> = ({
 }) => {
   return (
     <Card className="shadow-sm overflow-hidden flex flex-col">
-      <div className="px-6 py-4 border-b border-outline-variant/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface-container-lowest">
+      <div className="px-6 py-3.5 border-b border-outline-variant/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface-container-lowest">
         <div className="flex items-center gap-3">
           <h3 className="text-body-lg font-bold text-primary font-sans">Attendance Logs</h3>
           <span className="text-label-md font-mono text-secondary bg-secondary/10 px-2 py-0.5 rounded-md border border-secondary/15 font-semibold">

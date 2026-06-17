@@ -7,7 +7,7 @@ interface AttendanceLogsListProps {
 
 export const AttendanceLogsList: React.FC<AttendanceLogsListProps> = ({ logs }) => {
   return (
-    <div className="block sm:hidden flex-1 overflow-y-auto max-h-[440px] border-b border-outline-variant/40">
+    <div className="block sm:hidden flex-1 overflow-y-auto max-h-[500px] border-b border-outline-variant/40">
       <ul className="flex flex-col divide-y divide-outline-variant/30">
         {logs.length === 0 ? (
           <li className="text-center py-12 text-on-surface-variant font-sans text-body-sm bg-surface-container-lowest">

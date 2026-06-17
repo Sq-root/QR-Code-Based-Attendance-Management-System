@@ -166,7 +166,7 @@ export const Dashboard: React.FC = () => {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
               <h2 className="text-headline-lg-mobile md:text-headline-lg font-bold text-primary tracking-tight font-sans">Overview</h2>
-              <p className="text-body-sm text-on-surface-variant mt-0.5 font-sans">Real-time attendance metrics and updates.</p>
+              <p className="md:hidden text-body-sm text-on-surface-variant mt-0.5 font-sans">Real-time attendance metrics and updates.</p>
             </div>
             <Button variant="secondary" size="sm" className="hidden sm:flex items-center gap-2 border border-outline-variant hover:bg-surface-container transition-all">
               <Download className="w-4.5 h-4.5" />

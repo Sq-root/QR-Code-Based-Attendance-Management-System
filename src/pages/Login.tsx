@@ -214,12 +214,28 @@ export const Login: React.FC = () => {
 
             {/* Remember Me */}
             <div className="flex items-center justify-between mt-1 pl-1">
-              <label className="flex items-center gap-2 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  id="remember"
-                  className="w-4 h-4 rounded border-outline-variant text-secondary focus:ring-secondary bg-surface-container-lowest cursor-pointer"
-                />
+              <label className="flex items-center gap-2.5 cursor-pointer group">
+                <div className="relative flex items-center justify-center">
+                  <input
+                    type="checkbox"
+                    id="remember"
+                    className="peer sr-only"
+                  />
+                  <div className="w-5 h-5 rounded-[4px] border-2 border-outline-variant bg-surface-container-lowest peer-checked:bg-secondary peer-checked:border-secondary peer-checked:[&_svg]:scale-100 peer-focus-visible:ring-2 peer-focus-visible:ring-secondary/50 flex items-center justify-center transition-all duration-150 shadow-xs group-hover:border-secondary/70">
+                    <svg
+                      className="w-3.5 h-3.5 text-on-secondary stroke-[3.5] scale-0 transition-transform duration-150"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                </div>
                 <span className="text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors select-none">
                   Remember device
                 </span>

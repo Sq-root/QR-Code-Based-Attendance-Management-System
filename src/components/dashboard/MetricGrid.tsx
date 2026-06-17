@@ -20,8 +20,8 @@ export const MetricGrid: React.FC<MetricGridProps> = ({
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
       {/* Metric 1: Total Registered */}
-      <Card className="col-span-2 lg:col-span-1 hover:-translate-y-1 hover:border-secondary/35 hover:shadow-md transition-all duration-300 min-h-[120px]">
-        <CardContent className="p-4 md:p-6 flex flex-col justify-between h-full">
+      <Card className="col-span-2 lg:col-span-1 hover:-translate-y-1 hover:border-secondary/35 hover:shadow-md transition-all duration-300 min-h-[110px]">
+        <CardContent className="p-4 md:p-5 flex flex-col justify-between h-full">
           <div className="flex items-center justify-between pb-2">
             <span className="text-label-md font-semibold text-on-surface-variant uppercase tracking-wider font-sans">
               Total Registered
@@ -31,7 +31,7 @@ export const MetricGrid: React.FC<MetricGridProps> = ({
             </div>
           </div>
           <div className="mt-2">
-            <div className="text-[32px] font-bold text-on-surface tracking-tight font-sans leading-none">
+            <div className="text-[30px] font-bold text-on-surface tracking-tight font-sans leading-none">
               {totalRegistered}
             </div>
             <p className="mt-2 text-[11px] font-bold flex items-center gap-1 font-sans text-on-tertiary-container">
@@ -43,8 +43,8 @@ export const MetricGrid: React.FC<MetricGridProps> = ({
       </Card>
 
       {/* Metric 2: Present Today */}
-      <Card className="col-span-1 hover:-translate-y-1 hover:border-secondary/35 hover:shadow-md transition-all duration-300 min-h-[120px]">
-        <CardContent className="p-4 md:p-6 flex flex-col justify-between h-full">
+      <Card className="col-span-1 hover:-translate-y-1 hover:border-secondary/35 hover:shadow-md transition-all duration-300 min-h-[110px]">
+        <CardContent className="p-4 md:p-5 flex flex-col justify-between h-full">
           <div className="flex items-center justify-between pb-2">
             <span className="text-label-md font-semibold text-on-surface-variant uppercase tracking-wider font-sans">
               Present Today
@@ -54,7 +54,7 @@ export const MetricGrid: React.FC<MetricGridProps> = ({
             </div>
           </div>
           <div className="mt-2">
-            <div className="text-[32px] font-bold text-on-surface tracking-tight font-sans leading-none">
+            <div className="text-[30px] font-bold text-on-surface tracking-tight font-sans leading-none">
               {presentToday}
             </div>
             <p className="mt-2 text-[11px] font-bold flex items-center gap-1 font-sans text-on-surface-variant">
@@ -66,8 +66,8 @@ export const MetricGrid: React.FC<MetricGridProps> = ({
       </Card>
 
       {/* Metric 3: Attendance Rate */}
-      <Card className="col-span-1 hover:-translate-y-1 hover:border-secondary/35 hover:shadow-md transition-all duration-300 min-h-[120px]">
-        <CardContent className="p-4 md:p-6 flex flex-col justify-between h-full">
+      <Card className="col-span-1 hover:-translate-y-1 hover:border-secondary/35 hover:shadow-md transition-all duration-300 min-h-[110px]">
+        <CardContent className="p-4 md:p-5 flex flex-col justify-between h-full">
           <div className="flex items-center justify-between pb-2">
             <span className="text-label-md font-semibold text-on-surface-variant uppercase tracking-wider font-sans">
               Rate
@@ -77,7 +77,7 @@ export const MetricGrid: React.FC<MetricGridProps> = ({
             </div>
           </div>
           <div className="mt-2">
-            <div className="text-[32px] font-bold text-on-surface tracking-tight font-sans leading-none">
+            <div className="text-[30px] font-bold text-on-surface tracking-tight font-sans leading-none">
               {attendanceRate}
             </div>
             <p className="mt-2 text-[11px] font-bold flex items-center gap-1 font-sans text-error">
@@ -89,8 +89,8 @@ export const MetricGrid: React.FC<MetricGridProps> = ({
       </Card>
 
       {/* Metric 4: Active Sessions */}
-      <Card className="col-span-2 lg:col-span-1 hover:-translate-y-1 hover:border-secondary/35 hover:shadow-md transition-all duration-300 min-h-[120px]">
-        <CardContent className="p-4 md:p-6 flex flex-col justify-between h-full">
+      <Card className="col-span-2 lg:col-span-1 hover:-translate-y-1 hover:border-secondary/35 hover:shadow-md transition-all duration-300 min-h-[110px]">
+        <CardContent className="p-4 md:p-5 flex flex-col justify-between h-full">
           <div className="flex items-center justify-between pb-2">
             <span className="text-label-md font-semibold text-on-surface-variant uppercase tracking-wider font-sans">
               Active Sessions
@@ -100,10 +100,10 @@ export const MetricGrid: React.FC<MetricGridProps> = ({
             </div>
           </div>
           <div className="mt-2">
-            <div className="text-[32px] font-bold text-on-surface tracking-tight font-sans leading-none">
+            <div className="text-[30px] font-bold text-on-surface tracking-tight font-sans leading-none">
               {activeSessions}
             </div>
-            <div className="mt-3.5 space-y-1">
+            <div className="mt-3 space-y-1">
               <div className="w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
                 <div 
                   className="bg-secondary h-full rounded-full transition-all duration-300" 
