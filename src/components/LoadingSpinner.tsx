@@ -17,19 +17,19 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     <div className="flex flex-col items-center justify-center p-8 space-y-4">
       <div className="relative flex items-center justify-center">
         {/* Glow backdrop effect */}
-        <div className={`absolute rounded-full bg-brand-500/20 blur-xl animate-pulse ${
+        <div className={`absolute rounded-full bg-secondary/20 blur-xl animate-pulse ${
           size === 'sm' ? 'w-8 h-8' : size === 'md' ? 'w-14 h-14' : 'w-24 h-24'
         }`} />
         
         {/* Spinner circle */}
         <div
-          className={`${sizeClasses[size]} rounded-full border-zinc-800 border-t-brand-500 animate-spin`}
+          className={`${sizeClasses[size]} rounded-full border-surface-container-high border-t-secondary animate-spin`}
           role="status"
           aria-label="loading"
         />
       </div>
       {label && (
-        <span className="text-zinc-400 text-sm font-medium animate-pulse tracking-wide font-sans">
+        <span className="text-on-surface-variant text-body-sm animate-pulse font-sans">
           {label}
         </span>
       )}

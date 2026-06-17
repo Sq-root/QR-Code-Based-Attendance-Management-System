@@ -1,37 +1,119 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500;600;700&display=swap');
+
 @import "tailwindcss";
 
 @theme {
-  --color-brand-50: #f5f3ff;
-  --color-brand-100: #ede9fe;
-  --color-brand-200: #ddd6fe;
-  --color-brand-300: #c4b5fd;
-  --color-brand-400: #a78bfa;
-  --color-brand-500: #8b5cf6;
-  --color-brand-600: #7c3aed;
-  --color-brand-700: #6d28d9;
-  --color-brand-800: #5b21b6;
-  --color-brand-900: #4c1d95;
-  --color-brand-950: #2e1065;
 
-  --color-dark-50: #fafafa;
-  --color-dark-100: #f4f4f5;
-  --color-dark-200: #e4e4e7;
-  --color-dark-300: #d4d4d8;
-  --color-dark-400: #a1a1aa;
-  --color-dark-500: #71717a;
-  --color-dark-600: #52525b;
-  --color-dark-700: #3f3f46;
-  --color-dark-800: #27272a;
-  --color-dark-900: #18181b;
-  --color-dark-950: #09090b;
 
-  --font-sans: "Inter", sans-serif;
+  --font-sans: "Poppins", sans-serif;
+  --font-mono: "Geist Mono", monospace;
+
+  /* Precision Presence Design System - QR Scan Attendance Pro */
+  /* Colors */
+  --color-surface: #f7f9fb;
+  --color-surface-dim: #d8dadc;
+  --color-surface-bright: #f7f9fb;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f4f6;
+  --color-surface-container: #eceef0;
+  --color-surface-container-high: #e6e8ea;
+  --color-surface-container-highest: #e0e3e5;
+  --color-on-surface: #191c1e;
+  --color-on-surface-variant: #45464d;
+  --color-inverse-surface: #2d3133;
+  --color-inverse-on-surface: #eff1f3;
+  --color-outline: #76777d;
+  --color-outline-variant: #c6c6cd;
+  --color-surface-tint: #565e74;
+  --color-primary: #000000;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #131b2e;
+  --color-on-primary-container: #7c839b;
+  --color-inverse-primary: #bec6e0;
+  --color-secondary: #0051d5;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #316bf3;
+  --color-on-secondary-container: #fefcff;
+  --color-tertiary: #000000;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #002113;
+  --color-on-tertiary-container: #009668;
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  --color-primary-fixed: #dae2fd;
+  --color-primary-fixed-dim: #bec6e0;
+  --color-on-primary-fixed: #131b2e;
+  --color-on-primary-fixed-variant: #3f465c;
+  --color-secondary-fixed: #dbe1ff;
+  --color-secondary-fixed-dim: #b4c5ff;
+  --color-on-secondary-fixed: #00174b;
+  --color-on-secondary-fixed-variant: #003ea8;
+  --color-tertiary-fixed: #6ffbbe;
+  --color-tertiary-fixed-dim: #4edea3;
+  --color-on-tertiary-fixed: #002113;
+  --color-on-tertiary-fixed-variant: #005236;
+  --color-background: #f7f9fb;
+  --color-on-background: #191c1e;
+
+  /* Typography */
+  --text-display-lg: 48px;
+  --text-display-lg--line-height: 56px;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--font-weight: 700;
+
+  --text-headline-lg: 32px;
+  --text-headline-lg--line-height: 40px;
+  --text-headline-lg--letter-spacing: -0.01em;
+  --text-headline-lg--font-weight: 600;
+
+  --text-headline-lg-mobile: 24px;
+  --text-headline-lg-mobile--line-height: 32px;
+  --text-headline-lg-mobile--font-weight: 600;
+
+  --text-title-md: 20px;
+  --text-title-md--line-height: 28px;
+  --text-title-md--font-weight: 600;
+
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 24px;
+  --text-body-lg--font-weight: 400;
+
+  --text-body-sm: 14px;
+  --text-body-sm--line-height: 20px;
+  --text-body-sm--font-weight: 400;
+
+  --text-label-md: 12px;
+  --text-label-md--line-height: 16px;
+  --text-label-md--letter-spacing: 0.05em;
+  --text-label-md--font-weight: 600;
+
+  --text-mono-code: 14px;
+  --text-mono-code--line-height: 20px;
+  --text-mono-code--font-weight: 500;
+
+  /* Shapes / Rounded */
+  --radius-sm: 0.25rem;
+  --radius-DEFAULT: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Spacing */
+  --spacing-unit: 8px;
+  --spacing-container-max-width: 1280px;
+  --spacing-gutter: 24px;
+  --spacing-margin-mobile: 16px;
+  --spacing-margin-desktop: 40px;
+  --spacing-stack-gap: 16px;
 }
 
 /* Custom base styles in Tailwind v4 are styled via standard CSS selectors or utility directives */
 body {
-  background-color: var(--color-dark-950);
-  color: var(--color-dark-200);
+  background-color: var(--color-background);
+  color: var(--color-on-background);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
@@ -43,17 +125,17 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-dark-950);
+  background: var(--color-surface-container);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-dark-800);
+  background: var(--color-surface-dim);
   border-radius: 9999px;
-  border: 2px solid var(--color-dark-950);
+  border: 2px solid var(--color-surface-container);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-dark-700);
+  background: var(--color-outline);
 }
 
 /* Fade in animation utility */

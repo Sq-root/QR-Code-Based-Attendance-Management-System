@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
-import { API_BASE_URL } from '../constants';
+import { API_BASE_URL, AUTH_KEYS } from '../constants';
 
 // Create a custom Axios instance
 const api: AxiosInstance = axios.create({
@@ -15,8 +15,8 @@ const api: AxiosInstance = axios.create({
 // Request Interceptor: Attach authentication token, log requests, etc.
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    // Example: Retrieve token from localStorage (if auth is implemented)
-    const token = localStorage.getItem('auth_token');
+    // Retrieve token from localStorage
+    const token = localStorage.getItem(AUTH_KEYS.TOKEN);
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
