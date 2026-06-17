@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { X, ScanLine } from "lucide-react";
 import { toast } from "sonner";
 import { Html5Qrcode } from "html5-qrcode";
-import { SCANNER_CONFIG } from "../../constants";
+import { SCANNER_CONFIG, APP_NAME } from "../../constants";
 
 interface ScannerOverlayProps {
   isOpen: boolean;
@@ -88,7 +88,7 @@ export const ScannerOverlay: React.FC<ScannerOverlayProps> = ({
         >
           <X className="w-5 h-5 text-white" />
         </button>
-        <div className="font-title-md text-white font-bold tracking-tight">AttendPro Viewfinder</div>
+        <div className="font-title-md text-white font-bold tracking-tight">{APP_NAME} Viewfinder</div>
         <div className="w-12" />
       </div>
 
