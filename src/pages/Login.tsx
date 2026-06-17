@@ -7,7 +7,7 @@ import { Eye, EyeOff, Lock, User, ArrowRight, UserCheck } from 'lucide-react';
 import { toast } from 'sonner';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useLogin } from '../queries/authQueries';
-import { ROUTES } from '../constants';
+import { ROUTES, APP_NAME } from '../constants';
 
 // Define Zod validation schema
 const loginSchema = z.object({
@@ -87,7 +87,7 @@ export const Login: React.FC = () => {
           <div className="w-16 h-16 bg-secondary-container rounded-xl flex items-center justify-center text-on-secondary-container shadow-sm mb-1">
             <UserCheck className="w-8 h-8 text-on-secondary-container" />
           </div>
-          <h1 className="font-sans text-headline-lg-mobile font-semibold text-primary tracking-tight">AttendPro</h1>
+          <h1 className="font-sans text-headline-lg-mobile font-semibold text-primary tracking-tight">{APP_NAME}</h1>
           <p className="text-body-sm text-on-surface-variant">Secure Access Portal</p>
         </header>
 
@@ -100,7 +100,7 @@ export const Login: React.FC = () => {
               <UserCheck className="w-6 h-6 text-on-primary-fixed" />
             </div>
             <h1 className="font-sans text-headline-lg font-semibold text-primary tracking-tight">
-              Attend<span className="text-secondary">Pro</span>
+              {APP_NAME}
             </h1>
             <p className="text-body-sm text-on-surface-variant">Secure Attendance Verification</p>
           </div>

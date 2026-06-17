@@ -1,5 +1,5 @@
 import api from './api';
-import { API_ENDPOINTS } from '../constants';
+import { API_ENDPOINTS, APP_NAME } from '../constants';
 import type { LoginCredentials, AuthResponse } from '../types';
 
 export const authService = {
@@ -34,7 +34,7 @@ export const authService = {
           id: 'usr_1',
           name: credentials.role === 'admin' ? 'Admin User' : 'Standard Attendee',
           role: credentials.role,
-          email: credentials.identifier.includes('@') ? credentials.identifier : `${credentials.identifier}@attendpro.com`,
+          email: credentials.identifier.includes('@') ? credentials.identifier : `${credentials.identifier}@${APP_NAME.toLowerCase()}.com`,
         }
       };
     }

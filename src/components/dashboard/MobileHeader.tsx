@@ -1,11 +1,12 @@
 import React from 'react';
 import { Bell } from 'lucide-react';
 import { toast } from 'sonner';
+import { APP_NAME } from '../../constants';
 
 export const MobileHeader: React.FC = () => {
   return (
     <header className="bg-surface-bright border-b border-outline-variant/50 flex md:hidden justify-between items-center px-margin-mobile w-full h-16 sticky top-0 z-30 shadow-xs">
-      <h1 className="text-title-md font-bold text-primary font-sans">AttendPro</h1>
+      <h1 className="text-title-md font-bold text-primary font-sans">{APP_NAME}</h1>
       <div className="flex items-center gap-4">
         <button 
           className="text-on-surface-variant hover:text-secondary p-1.5 transition-colors cursor-pointer"
