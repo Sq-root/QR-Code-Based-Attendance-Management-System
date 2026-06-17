@@ -20,7 +20,6 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export const Login: React.FC = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState<'admin' | 'attendee'>('admin');
   const [apiError, setApiError] = useState<string | null>(null);
 
   // TanStack Query Login Mutation
@@ -42,12 +41,12 @@ export const Login: React.FC = () => {
   const onSubmit = (data: LoginFormData) => {
     setApiError(null);
 
-    // Call TanStack mutation (using the selected role)
+    // Call TanStack mutation
     loginMutation.mutate(
       {
         identifier: data.identifier,
         password: data.password,
-        role: role,
+        role: 'admin',
       },
       {
         onSuccess: (response) => {
@@ -106,32 +105,6 @@ export const Login: React.FC = () => {
             <p className="text-body-sm text-on-surface-variant">Secure Attendance Verification</p>
           </div>
 
-          {/* Segmented Control Toggle (matches Stitch design exactly) */}
-          <div className="flex bg-surface-container p-1 rounded-lg w-full mb-1">
-            <button
-              type="button"
-              onClick={() => setRole('admin')}
-              className={`flex-1 py-2 font-sans text-label-md text-center rounded-md transition-all duration-200 cursor-pointer focus:outline-none ${
-                role === 'admin'
-                  ? 'bg-surface-container-lowest text-primary shadow-xs font-bold'
-                  : 'text-on-surface-variant hover:text-primary font-medium'
-              }`}
-            >
-              Administrator
-            </button>
-            <button
-              type="button"
-              onClick={() => setRole('attendee')}
-              className={`flex-1 py-2 font-sans text-label-md text-center rounded-md transition-all duration-200 cursor-pointer focus:outline-none ${
-                role === 'attendee'
-                  ? 'bg-surface-container-lowest text-primary shadow-xs font-bold'
-                  : 'text-on-surface-variant hover:text-primary font-medium'
-              }`}
-            >
-              Attendee
-            </button>
-          </div>
-
           {/* Error Message Alert */}
           {apiError && (
             <div className="p-3 bg-error-container/20 border border-error/30 text-error rounded-lg text-xs leading-relaxed">
@@ -173,16 +146,6 @@ export const Login: React.FC = () => {
                 <label className="text-label-md font-semibold text-on-surface" htmlFor="password">
                   Password
                 </label>
-                <a
-                  className="text-label-md font-semibold text-secondary hover:text-on-secondary-fixed-variant transition-colors"
-                  href="#forgot-password"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    toast.info('Password recovery is currently disabled.');
-                  }}
-                >
-                  Forgot?
-                </a>
               </div>
               <div className="relative">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none flex items-center">
@@ -212,36 +175,6 @@ export const Login: React.FC = () => {
               )}
             </div>
 
-            {/* Remember Me */}
-            <div className="flex items-center justify-between mt-1 pl-1">
-              <label className="flex items-center gap-2.5 cursor-pointer group">
-                <div className="relative flex items-center justify-center">
-                  <input
-                    type="checkbox"
-                    id="remember"
-                    className="peer sr-only"
-                  />
-                  <div className="w-5 h-5 rounded-[4px] border-2 border-outline-variant bg-surface-container-lowest peer-checked:bg-secondary peer-checked:border-secondary peer-checked:[&_svg]:scale-100 peer-focus-visible:ring-2 peer-focus-visible:ring-secondary/50 flex items-center justify-center transition-all duration-150 shadow-xs group-hover:border-secondary/70">
-                    <svg
-                      className="w-3.5 h-3.5 text-on-secondary stroke-[3.5] scale-0 transition-transform duration-150"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                <span className="text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors select-none">
-                  Remember device
-                </span>
-              </label>
-            </div>
-
             {/* Submit Action */}
             <button
               className="w-full h-12 bg-secondary text-on-secondary font-sans text-label-md font-semibold rounded-lg flex items-center justify-center gap-2 hover:bg-on-secondary-fixed-variant active:opacity-90 transition-all duration-150 shadow-sm mt-2 cursor-pointer disabled:opacity-50"
@@ -262,43 +195,6 @@ export const Login: React.FC = () => {
             </button>
 
           </form>
-        </div>
-
-        {/* Mobile-Only Support Link (matches Stitch exactly) */}
-        <div className="text-center mt-2 block sm:hidden select-none">
-          <p className="text-body-sm text-on-surface-variant font-sans">
-            Having trouble?{' '}
-            <a 
-              className="text-secondary font-semibold hover:underline focus:outline-none" 
-              href="#support" 
-              onClick={(e) => {
-                e.preventDefault();
-                toast.info('Support contact form is under development.');
-              }}
-            >
-              Contact Support
-            </a>
-          </p>
-        </div>
-
-        {/* Desktop-Only Footer for Login (matches Stitch exactly) */}
-        <div className="mt-8 text-center hidden sm:flex flex-col items-center gap-2 select-none">
-          <p className="text-body-sm text-on-surface-variant font-sans">
-            &copy; {new Date().getFullYear()} AttendPro Systems.
-          </p>
-          <div className="flex items-center justify-center gap-4 text-body-sm">
-            <a className="text-outline hover:text-on-surface transition-colors" href="#privacy" onClick={(e) => e.preventDefault()}>
-              Privacy
-            </a>
-            <span className="w-1 h-1 rounded-full bg-outline-variant"></span>
-            <a className="text-outline hover:text-on-surface transition-colors" href="#terms" onClick={(e) => e.preventDefault()}>
-              Terms
-            </a>
-            <span className="w-1 h-1 rounded-full bg-outline-variant"></span>
-            <a className="text-outline hover:text-on-surface transition-colors" href="#help" onClick={(e) => e.preventDefault()}>
-              Help
-            </a>
-          </div>
         </div>
 
       </main>
