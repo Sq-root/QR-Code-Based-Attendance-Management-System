@@ -8,6 +8,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Login = lazy(() => import('./pages/Login'));
 const RegisterAttendee = lazy(() => import('./pages/RegisterAttendee'));
+const AttendeesList = lazy(() => import('./pages/AttendeesList'));
 
 // Helper component to guard routes that require authentication
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -72,6 +73,22 @@ const router = createHashRouter([
             </div>
           }>
             <RegisterAttendee />
+          </Suspense>
+        </ProtectedRoute>
+      </ErrorBoundary>
+    ),
+  },
+  {
+    path: ROUTES.ATTENDEES_LIST,
+    element: (
+      <ErrorBoundary>
+        <ProtectedRoute>
+          <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-surface-container-low">
+              <LoadingSpinner size="lg" label="Loading attendees..." />
+            </div>
+          }>
+            <AttendeesList />
           </Suspense>
         </ProtectedRoute>
       </ErrorBoundary>

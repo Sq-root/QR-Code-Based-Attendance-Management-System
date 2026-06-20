@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Send } from "lucide-react";
+import { Send } from "lucide-react";
 import { toast } from "sonner";
-import Sidebar from "../components/dashboard/Sidebar";
-import Header from "../components/dashboard/Header";
-import MobileHeader from "../components/dashboard/MobileHeader";
+import AppShell from "../components/dashboard/AppShell";
 import { Button } from "../components/ui/button";
 import { AUTH_KEYS, EVENT_SESSION_ID, ROUTES } from "../constants";
 import { useRegisterAttendee } from "../queries/attendanceQueries";
@@ -92,32 +90,15 @@ export const RegisterAttendee: React.FC = () => {
   };
 
   return (
-    <div className="bg-surface-container-low text-on-surface font-sans min-h-screen flex flex-col md:flex-row antialiased relative">
-      <Sidebar onLogout={handleLogout} />
-      <MobileHeader onLogout={handleLogout} />
-
-      <div className="flex-1 flex flex-col md:ml-64 min-w-0">
-        <Header />
+    <AppShell onLogout={handleLogout}>
         <main className="flex-1 px-margin-mobile md:px-8 py-6 w-full max-w-[1100px] mx-auto space-y-6 animate-fade-in">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h2 className="text-headline-lg-mobile md:text-headline-lg font-bold text-primary tracking-tight">
-                Register Attendee
-              </h2>
-              <p className="text-body-sm text-on-surface-variant mt-1">
-                Add attendee details, issue QR pass, and send ticket on WhatsApp.
-              </p>
-            </div>
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              onClick={() => navigate(ROUTES.HOME)}
-              className="w-full sm:w-auto"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Dashboard
-            </Button>
+          <div>
+            <h2 className="text-headline-lg-mobile md:text-headline-lg font-bold text-primary tracking-tight">
+              Register Attendee
+            </h2>
+            <p className="text-body-sm text-on-surface-variant mt-1">
+              Add attendee details, issue QR pass, and send ticket on WhatsApp.
+            </p>
           </div>
 
           <form
@@ -155,8 +136,7 @@ export const RegisterAttendee: React.FC = () => {
             </div>
           </form>
         </main>
-      </div>
-    </div>
+    </AppShell>
   );
 };
 

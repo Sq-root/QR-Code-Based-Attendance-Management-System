@@ -8,10 +8,7 @@ import { toast } from "sonner";
 import { useAttendees, useCheckIn } from "../queries/attendanceQueries";
 import type { Attendee, QrPayload } from "../types";
 
-// Import newly refactored subcomponents
-import Sidebar from "../components/dashboard/Sidebar";
-import Header from "../components/dashboard/Header";
-import MobileHeader from "../components/dashboard/MobileHeader";
+import AppShell from "../components/dashboard/AppShell";
 import MetricGrid from "../components/dashboard/MetricGrid";
 import AttendanceLogsCard from "../components/dashboard/AttendanceLogsCard";
 import ScannerOverlay from "../components/dashboard/ScannerOverlay";
@@ -254,18 +251,7 @@ export const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="bg-surface-container-low text-on-surface font-sans min-h-screen flex flex-col md:flex-row antialiased relative">
-      {/* Sidebar Navigation Panel (Desktop Only - Clean Light Sidebar) */}
-      <Sidebar onLogout={handleLogout} />
-
-      {/* Top Header Bar for Mobile */}
-      <MobileHeader onLogout={handleLogout} />
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col md:ml-64 min-w-0">
-        {/* Top Header Bar for Desktop */}
-        <Header />
-
+    <AppShell onLogout={handleLogout}>
         {/* Dashboard Panels */}
         <main className="flex-1 px-margin-mobile md:px-8 py-6 w-full max-w-[1600px] mx-auto space-y-6 animate-fade-in">
           {/* Header and export report */}
@@ -347,7 +333,6 @@ export const Dashboard: React.FC = () => {
             onNextPage={goToNextPage}
           />
         </main>
-      </div>
 
       {/* FAB (Floating Action Button) for Desktop (Scan QR Code shortcut) */}
       <button
@@ -367,7 +352,7 @@ export const Dashboard: React.FC = () => {
         onScanSuccess={handleScanSuccess}
       />
 
-    </div>
+    </AppShell>
   );
 };
 

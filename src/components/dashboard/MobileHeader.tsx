@@ -1,8 +1,8 @@
 import React from "react";
-import { LayoutDashboard, LogOut, UserPlus } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { LogOut, Menu } from "lucide-react";
 
-import { APP_NAME, ROUTES } from "../../constants";
+import { APP_NAME } from "../../constants";
+import { SidebarTrigger } from "../ui/sidebar";
 
 interface MobileHeaderProps {
   onLogout: () => void;
@@ -12,9 +12,16 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ onLogout }) => {
   return (
     <header className="bg-surface-bright border-b border-outline-variant/50 md:hidden w-full sticky top-0 z-30 shadow-xs">
       <div className="flex justify-between items-center px-margin-mobile h-16">
-        <h1 className="text-title-md font-bold text-primary font-sans">
-          {APP_NAME}
-        </h1>
+        <div className="flex items-center gap-3 min-w-0">
+          <SidebarTrigger
+            aria-label="Open navigation menu"
+          >
+            <Menu className="w-5 h-5" />
+          </SidebarTrigger>
+          <h1 className="text-title-md font-bold text-primary font-sans truncate">
+            {APP_NAME}
+          </h1>
+        </div>
         <div className="flex items-center gap-3">
           <button
             onClick={onLogout}
@@ -32,34 +39,6 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ onLogout }) => {
           </div>
         </div>
       </div>
-      <nav className="grid grid-cols-2 gap-2 px-margin-mobile pb-3">
-        <NavLink
-          to={ROUTES.HOME}
-          className={({ isActive }) =>
-            `h-10 rounded-lg flex items-center justify-center gap-2 text-label-md font-bold border transition-colors ${
-              isActive
-                ? "bg-secondary/10 text-secondary border-secondary/20"
-                : "bg-surface-container-lowest text-on-surface-variant border-outline-variant"
-            }`
-          }
-        >
-          <LayoutDashboard className="w-4 h-4" />
-          Dashboard
-        </NavLink>
-        <NavLink
-          to={ROUTES.NEW_ATTENDEE}
-          className={({ isActive }) =>
-            `h-10 rounded-lg flex items-center justify-center gap-2 text-label-md font-bold border transition-colors ${
-              isActive
-                ? "bg-secondary/10 text-secondary border-secondary/20"
-                : "bg-surface-container-lowest text-on-surface-variant border-outline-variant"
-            }`
-          }
-        >
-          <UserPlus className="w-4 h-4" />
-          Register
-        </NavLink>
-      </nav>
     </header>
   );
 };

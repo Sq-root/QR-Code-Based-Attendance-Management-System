@@ -8,6 +8,7 @@ export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
   NEW_ATTENDEE: '/attendees/new',
+  ATTENDEES_LIST: '/attendees',
 } as const;
 
 export const AUTH_KEYS = {
