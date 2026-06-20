@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Download, ScanLine, Plus } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { mockLogs } from "../mock/attendanceData";
 import type { ActivityLog } from "../mock/attendanceData";
-import { AUTH_KEYS, ROUTES } from "../constants";
+import { AUTH_KEYS, EVENT_SESSION_ID, ROUTES } from "../constants";
 import { toast } from "sonner";
+import { useAttendees, useCheckIn } from "../queries/attendanceQueries";
+import type { Attendee, QrPayload } from "../types";
 
 // Import newly refactored subcomponents
 import Sidebar from "../components/dashboard/Sidebar";
@@ -15,11 +16,53 @@ import MetricGrid from "../components/dashboard/MetricGrid";
 import AttendanceLogsCard from "../components/dashboard/AttendanceLogsCard";
 import ScannerOverlay from "../components/dashboard/ScannerOverlay";
 
+const getInitials = (name: string) =>
+  name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .substring(0, 2) || "NA";
+
+const formatTime = (value?: string) => {
+  if (!value) {
+    return "-";
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
+
+  return date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const attendeeToLog = (attendee: Attendee): ActivityLog => {
+  const name = attendee.fullName || "Unknown Attendee";
+
+  return {
+    id: String(attendee.attendeeId ?? attendee.id ?? name),
+    name,
+    initials: getInitials(name),
+    avatarBg: "bg-primary-fixed text-on-primary-fixed",
+    session: attendee.standard || attendee.residentialSuburb || "Registered attendee",
+    time: formatTime(attendee.createdAt),
+    status: attendee.attendanceStatus?.toLowerCase() === "late" ? "Late" : "Success",
+  };
+};
+
 export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  const hasValidSessionId =
+    Boolean(EVENT_SESSION_ID) && EVENT_SESSION_ID !== "replace-with-session-id-from-backend-logs";
+  const checkInMutation = useCheckIn(EVENT_SESSION_ID);
+  const attendeesQuery = useAttendees(EVENT_SESSION_ID, hasValidSessionId);
 
-  // Dynamic logs state to allow scanning to add new records
-  const [logs, setLogs] = useState<ActivityLog[]>(mockLogs);
+  // Extra logs from scans are kept locally until backend exposes attendance-record list.
+  const [scanLogs, setScanLogs] = useState<ActivityLog[]>([]);
 
   // Client-side search and refresh states
   const [searchQuery, setSearchQuery] = useState("");
@@ -34,6 +77,12 @@ export const Dashboard: React.FC = () => {
   const [scannerScanning, setScannerScanning] = useState(false);
   const [scannerSuccessName, setScannerSuccessName] = useState("");
 
+  const attendeeLogs = useMemo(
+    () => (attendeesQuery.data ?? []).map(attendeeToLog),
+    [attendeesQuery.data],
+  );
+  const logs = useMemo(() => [...scanLogs, ...attendeeLogs], [scanLogs, attendeeLogs]);
+
   const handleLogout = () => {
     localStorage.removeItem(AUTH_KEYS.TOKEN);
     localStorage.removeItem(AUTH_KEYS.ROLE);
@@ -43,10 +92,9 @@ export const Dashboard: React.FC = () => {
 
   const handleRefresh = () => {
     setIsRefreshing(true);
-    toast.promise(new Promise((resolve) => setTimeout(resolve, 800)), {
+    toast.promise(attendeesQuery.refetch().finally(() => setIsRefreshing(false)), {
       loading: "Refreshing attendance records...",
       success: () => {
-        setIsRefreshing(false);
         setSearchQuery("");
         setCurrentPage(1);
         return "Attendance logs updated successfully.";
@@ -62,49 +110,120 @@ export const Dashboard: React.FC = () => {
     setScannerSuccessName("");
   };
 
-  // Handle actual QR code detection
-  const handleScanSuccess = (decodedText: string) => {
-    // Determine the name from the decoded QR Code text
-    const luckyName = decodedText.trim() || "Unknown Attendee";
+  const getScannerDeviceId = () => {
+    const storageKey = "scanner_device_id";
+    const existingId = localStorage.getItem(storageKey);
 
-    setScannerSuccessName(luckyName);
+    if (existingId) {
+      return existingId;
+    }
+
+    const newId = `web-${crypto.randomUUID()}`;
+    localStorage.setItem(storageKey, newId);
+    return newId;
+  };
+
+  const parseQrTicket = (decodedText: string): { payload: QrPayload; signature: string } => {
+    console.log("[Dashboard Scanner] Raw QR text detected", decodedText);
+    const parsed = JSON.parse(decodedText);
+
+    if (!parsed?.payload || !parsed?.signature) {
+      throw new Error("QR code is not a valid attendance ticket.");
+    }
+
+    return {
+      payload: parsed.payload,
+      signature: parsed.signature,
+    };
+  };
+
+  // Handle actual QR code detection
+  const handleScanSuccess = async (decodedText: string) => {
+    if (!hasValidSessionId) {
+      setScannerScanning(false);
+      toast.error("Session ID missing", {
+        description: "Add VITE_EVENT_SESSION_ID in .env from backend logs.",
+      });
+      return;
+    }
+
+    let ticket: { payload: QrPayload; signature: string };
+
+    try {
+      ticket = parseQrTicket(decodedText);
+      console.log("[Dashboard Scanner] Parsed QR ticket", {
+        passId: ticket.payload.pid,
+        attendeeId: ticket.payload.aid,
+        sessionId: ticket.payload.sid,
+        expiresAt: ticket.payload.exp,
+        hasSignature: Boolean(ticket.signature),
+      });
+    } catch (error) {
+      console.error("[Dashboard Scanner] Invalid QR code", error);
+      setScannerScanning(false);
+      toast.error("Invalid QR code", {
+        description: error instanceof Error ? error.message : "Unable to read ticket data.",
+      });
+      return;
+    }
+
+    setScannerSuccessName("Verifying ticket");
     setScannerScanning(false);
 
-    toast.success("QR Code Detected", {
-      description: `Verifying presence for ${luckyName}...`,
+    toast.info("QR Code Detected", {
+      description: "Verifying ticket with backend...",
     });
 
-    // Confirm verification after a brief delay for UX
-    setTimeout(() => {
-      const initials = luckyName
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .substring(0, 2);
+    checkInMutation.mutate(
+      {
+        payload: ticket.payload,
+        signature: ticket.signature,
+        scannerDeviceId: getScannerDeviceId(),
+        deviceScanId: crypto.randomUUID(),
+        source: "web_scanner",
+      },
+      {
+        onSuccess: (response) => {
+          console.log("[Dashboard Scanner] Check-in success", response);
+          const attendeeName = response.attendeeName || `Attendee ${ticket.payload.aid}`;
+          const initials = attendeeName
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .toUpperCase()
+            .substring(0, 2);
 
-      // Add scanned attendee to logs
-      const newLog: ActivityLog = {
-        id: Date.now().toString(),
-        name: luckyName,
-        initials: initials,
-        avatarBg:
-          "bg-tertiary-fixed-dim/20 text-on-tertiary-container border border-on-tertiary-container/15",
-        session: "Afternoon Workshop - Hall B",
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        status: "Success",
-      };
+          const newLog: ActivityLog = {
+            id: crypto.randomUUID(),
+            name: attendeeName,
+            initials,
+            avatarBg:
+              "bg-tertiary-fixed-dim/20 text-on-tertiary-container border border-on-tertiary-container/15",
+            session: `Session ${ticket.payload.sid}`,
+            time: new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            status: "Success",
+          };
 
-      setLogs((prev) => [newLog, ...prev]);
-      setScannerOpen(false);
+          setScanLogs((prev) => [newLog, ...prev]);
+          setScannerSuccessName(attendeeName);
+          setScannerOpen(false);
 
-      toast.success("Attendance Recorded!", {
-        description: `${luckyName} marked Present.`,
-      });
-    }, 1000);
+          toast.success("Attendance Recorded", {
+            description: response.message || `${attendeeName} marked present.`,
+          });
+        },
+        onError: (error) => {
+          console.error("[Dashboard Scanner] Check-in failed", error);
+          setScannerSuccessName("");
+          toast.error("Check-in failed", {
+            description: error.message || "Backend rejected this QR ticket.",
+          });
+        },
+      },
+    );
   };
 
   // Filter logs based on search query
@@ -159,14 +278,25 @@ export const Dashboard: React.FC = () => {
                 Real-time attendance metrics and updates.
               </p>
             </div>
-            <Button
-              variant="secondary"
-              size="sm"
-              className="hidden sm:flex items-center gap-2 border border-outline-variant hover:bg-surface-container transition-all"
-            >
-              <Download className="w-4.5 h-4.5" />
-              Download Report
-            </Button>
+            <div className="hidden sm:flex items-center gap-3">
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => navigate(ROUTES.NEW_ATTENDEE)}
+                className="items-center gap-2"
+              >
+                <Plus className="w-4.5 h-4.5" />
+                Register Attendee
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="items-center gap-2 border border-outline-variant hover:bg-surface-container transition-all"
+              >
+                <Download className="w-4.5 h-4.5" />
+                Download Report
+              </Button>
+            </div>
           </div>
 
           {/* KPI Summary Bento Grid */}
@@ -188,12 +318,12 @@ export const Dashboard: React.FC = () => {
               <span className="font-sans text-label-md font-bold">Scan QR</span>
             </button>
             <button
-              onClick={() => toast.info("Manual check-in interface triggered.")}
+              onClick={() => navigate(ROUTES.NEW_ATTENDEE)}
               className="bg-surface-container-lowest border border-outline-variant text-on-surface rounded-xl p-4 flex flex-col items-center justify-center gap-2 shadow-xs active:bg-surface-container-low transition-colors cursor-pointer"
             >
               <Plus className="w-6 h-6 text-secondary" />
               <span className="font-sans text-label-md font-bold">
-                Manual Entry
+                Register
               </span>
             </button>
           </div>
@@ -206,7 +336,7 @@ export const Dashboard: React.FC = () => {
               setSearchQuery(q);
               setCurrentPage(1);
             }}
-            isRefreshing={isRefreshing}
+            isRefreshing={isRefreshing || attendeesQuery.isFetching}
             onRefresh={handleRefresh}
             currentPage={currentPage}
             totalPages={totalPages}
@@ -236,6 +366,7 @@ export const Dashboard: React.FC = () => {
         successName={scannerSuccessName}
         onScanSuccess={handleScanSuccess}
       />
+
     </div>
   );
 };

@@ -10,12 +10,26 @@ export const authService = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
       // Send real API request
-      const response = await api.post<AuthResponse>(API_ENDPOINTS.LOGIN, {
+      const response = await api.post<Partial<AuthResponse> & { token: string }>(API_ENDPOINTS.LOGIN, {
         username: credentials.identifier,
         password: credentials.password,
-        role: credentials.role,
       });
-      return response.data;
+      console.log('[Auth Service] Login API success', {
+        hasToken: Boolean(response.data.token),
+        hasUser: Boolean(response.data.user),
+      });
+
+      return {
+        token: response.data.token,
+        user: response.data.user ?? {
+          id: credentials.identifier,
+          name: credentials.identifier,
+          role: 'admin',
+          email: credentials.identifier.includes('@')
+            ? credentials.identifier
+            : `${credentials.identifier}@${APP_NAME.toLowerCase()}.com`,
+        },
+      };
     } catch (error: unknown) {
       console.warn('[Auth Service] Real login API failed or is not configured. Falling back to mock response for testing...', error);
       

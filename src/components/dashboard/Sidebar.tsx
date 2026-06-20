@@ -1,5 +1,7 @@
 import React from 'react';
-import { LayoutDashboard, LogOut } from 'lucide-react';
+import { LayoutDashboard, LogOut, UserPlus } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+import { ROUTES } from '../../constants';
 
 interface SidebarProps {
   onLogout: () => void;
@@ -21,13 +23,39 @@ export const Sidebar: React.FC<SidebarProps> = ({ onLogout }) => {
 
       {/* Sidebar Navigation Tabs (Dashboard only) */}
       <nav className="flex-1 flex flex-col gap-1 px-3">
-        <button 
-          className="w-full flex items-center gap-3 rounded-lg px-4 py-3 font-sans text-label-md font-bold transition-all duration-150 relative cursor-pointer bg-secondary/10 text-secondary"
+        <NavLink
+          to={ROUTES.HOME}
+          className={({ isActive }) =>
+            `w-full flex items-center gap-3 rounded-lg px-4 py-3 font-sans text-label-md font-bold transition-all duration-150 relative cursor-pointer ${
+              isActive ? 'bg-secondary/10 text-secondary' : 'text-on-surface-variant hover:bg-surface-container hover:text-primary'
+            }`
+          }
         >
-          <div className="absolute left-0 top-1/4 h-1/2 w-1 bg-secondary rounded-r-md" />
-          <LayoutDashboard className="w-4.5 h-4.5" />
-          Dashboard
-        </button>
+          {({ isActive }) => (
+            <>
+              {isActive && <div className="absolute left-0 top-1/4 h-1/2 w-1 bg-secondary rounded-r-md" />}
+              <LayoutDashboard className="w-4.5 h-4.5" />
+              Dashboard
+            </>
+          )}
+        </NavLink>
+
+        <NavLink
+          to={ROUTES.NEW_ATTENDEE}
+          className={({ isActive }) =>
+            `w-full flex items-center gap-3 rounded-lg px-4 py-3 font-sans text-label-md font-bold transition-all duration-150 relative cursor-pointer ${
+              isActive ? 'bg-secondary/10 text-secondary' : 'text-on-surface-variant hover:bg-surface-container hover:text-primary'
+            }`
+          }
+        >
+          {({ isActive }) => (
+            <>
+              {isActive && <div className="absolute left-0 top-1/4 h-1/2 w-1 bg-secondary rounded-r-md" />}
+              <UserPlus className="w-4.5 h-4.5" />
+              Register Attendee
+            </>
+          )}
+        </NavLink>
       </nav>
 
       {/* Sidebar Log Out Button */}
