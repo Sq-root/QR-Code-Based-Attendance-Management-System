@@ -24,9 +24,9 @@ export const useIssuePass = (sessionId: string) => {
   });
 };
 
-export const useCheckIn = (sessionId: string) => {
+export const useCheckIn = () => {
   return useMutation<CheckInResponse, ApiError, CheckInRequest>({
-    mutationFn: (data) => attendanceService.checkIn(sessionId, data),
+    mutationFn: (data) => attendanceService.checkIn(data),
   });
 };
 

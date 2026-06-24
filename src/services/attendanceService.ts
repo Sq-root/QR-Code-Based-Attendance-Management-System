@@ -11,14 +11,29 @@ import type {
   IssuePassResponse,
   RegisterAttendeeRequest,
   RegisterAttendeeResponse,
+  AttendeeResponseItem,
 } from '../types';
+
+const normalizeAttendee = (item: AttendeeResponseItem): Attendee => {
+  if ('attendee' in item) {
+    return {
+      ...item.attendee,
+      qrToken: item.qrToken,
+      pass: item.pass,
+      deliveryStatus: item.attendee.deliveryStatus ?? item.pass?.deliveryStatus ?? undefined,
+    };
+  }
+
+  return item;
+};
 
 const normalizeAttendees = (data: GetAttendeesResponse): Attendee[] => {
   if (Array.isArray(data)) {
-    return data;
+    return data.map(normalizeAttendee);
   }
 
-  return data.attendees ?? data.data ?? data.content ?? [];
+  const items = data.attendees ?? data.data ?? data.content ?? [];
+  return items.map(normalizeAttendee);
 };
 
 export const attendanceService = {
@@ -34,7 +49,9 @@ export const attendanceService = {
     return response.data;
   },
 
-  async checkIn(sessionId: string, data: CheckInRequest): Promise<CheckInResponse> {
+  async checkIn(data: CheckInRequest): Promise<CheckInResponse> {
+    const sessionId = data.payload.sid;
+
     console.log('[Attendance Service] Check-in request started', {
       sessionId,
       passId: data.payload.pid,

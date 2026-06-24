@@ -55,7 +55,7 @@ export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const hasValidSessionId =
     Boolean(EVENT_SESSION_ID) && EVENT_SESSION_ID !== "replace-with-session-id-from-backend-logs";
-  const checkInMutation = useCheckIn(EVENT_SESSION_ID);
+  const checkInMutation = useCheckIn();
   const attendeesQuery = useAttendees(EVENT_SESSION_ID, hasValidSessionId);
 
   // Extra logs from scans are kept locally until backend exposes attendance-record list.
@@ -124,7 +124,12 @@ export const Dashboard: React.FC = () => {
     console.log("[Dashboard Scanner] Raw QR text detected", decodedText);
     const parsed = JSON.parse(decodedText);
 
-    if (!parsed?.payload || !parsed?.signature) {
+    if (
+      !parsed?.payload?.pid ||
+      !parsed.payload.aid ||
+      !parsed.payload.sid ||
+      !parsed.signature
+    ) {
       throw new Error("QR code is not a valid attendance ticket.");
     }
 
@@ -136,14 +141,6 @@ export const Dashboard: React.FC = () => {
 
   // Handle actual QR code detection
   const handleScanSuccess = async (decodedText: string) => {
-    if (!hasValidSessionId) {
-      setScannerScanning(false);
-      toast.error("Session ID missing", {
-        description: "Add VITE_EVENT_SESSION_ID in .env from backend logs.",
-      });
-      return;
-    }
-
     let ticket: { payload: QrPayload; signature: string };
 
     try {

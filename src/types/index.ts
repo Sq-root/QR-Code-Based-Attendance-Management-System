@@ -26,7 +26,7 @@ export interface IssuePassRequest {
 
 export interface IssuePassResponse {
   passId?: string;
-  attendeeId?: number;
+  attendeeId?: string;
   deliveryStatus?: string;
   whatsappMessageId?: string;
   message?: string;
@@ -34,17 +34,37 @@ export interface IssuePassResponse {
 
 export interface QrPayload {
   pid: string;
-  aid: number;
+  aid: string;
   sid: string;
-  exp: number;
+  exp?: number;
+}
+
+export interface QrToken {
+  payload: QrPayload;
+  signature: string;
+}
+
+export interface AttendancePass {
+  passId: string;
+  attendeeId: string;
+  eventSessionId: string;
+  barcodeFormat?: string;
+  payloadVersion?: number;
+  publicTokenHash?: string;
+  issuedAt?: string;
+  expiresAt?: string | null;
+  revokedAt?: string | null;
+  whatsappMessageId?: string | null;
+  deliveryStatus?: string | null;
+  createdAt?: string;
 }
 
 export interface CheckInRequest {
   payload: QrPayload;
   signature: string;
-  scannerDeviceId: string;
-  deviceScanId: string;
-  source: string;
+  scannerDeviceId?: string;
+  deviceScanId?: string;
+  source?: string;
 }
 
 export interface CheckInResponse {
@@ -70,8 +90,9 @@ export interface BulkUploadJob {
 }
 
 export interface Attendee {
-  attendeeId?: number;
+  attendeeId?: string;
   id?: string | number;
+  tenantId?: string;
   fullName: string;
   gender?: string;
   age?: string;
@@ -82,12 +103,17 @@ export interface Attendee {
   motherPhone?: string;
   phoneNumber?: string;
   phoneE164?: string;
+  dedupeKey?: string;
+  whatsappOptInAt?: string | null;
+  registrationTimestamp?: string | null;
   residentialSuburb?: string;
   whoWillAttend?: string;
   referenceName?: string;
   deliveryStatus?: string;
   attendanceStatus?: string;
   createdAt?: string;
+  qrToken?: QrToken;
+  pass?: AttendancePass;
 }
 
 export interface RegisterAttendeeRequest {
@@ -105,15 +131,23 @@ export interface RegisterAttendeeRequest {
 }
 
 export interface RegisterAttendeeResponse {
-  attendeeId?: number;
+  attendeeId?: string;
   passId?: string;
   deliveryStatus?: string;
   whatsappMessageId?: string;
   message?: string;
 }
 
+export interface AttendeeWithPass {
+  attendee: Attendee;
+  qrToken?: QrToken;
+  pass?: AttendancePass;
+}
+
+export type AttendeeResponseItem = Attendee | AttendeeWithPass;
+
 export type GetAttendeesResponse = Attendee[] | {
-  attendees?: Attendee[];
-  data?: Attendee[];
-  content?: Attendee[];
+  attendees?: AttendeeResponseItem[];
+  data?: AttendeeResponseItem[];
+  content?: AttendeeResponseItem[];
 };

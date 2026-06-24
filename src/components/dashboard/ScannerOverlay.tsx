@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { X, ScanLine } from "lucide-react";
 import { toast } from "sonner";
 import { Html5Qrcode } from "html5-qrcode";
@@ -21,17 +21,53 @@ export const ScannerOverlay: React.FC<ScannerOverlayProps> = ({
 }) => {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const callbackRef = useRef(onScanSuccess);
+  const [cameraError, setCameraError] = useState("");
   callbackRef.current = onScanSuccess;
 
   useEffect(() => {
     if (!isOpen) return;
 
     let cancelled = false;
+    setCameraError("");
+
+    const getCameraErrorMessage = (err: unknown) => {
+      const name = err instanceof DOMException ? err.name : "";
+      const message = err instanceof Error ? err.message : String(err ?? "");
+
+      if (!window.isSecureContext) {
+        return "Camera requires HTTPS, localhost, or 127.0.0.1. Open this app on a secure URL.";
+      }
+
+      if (!navigator.mediaDevices?.getUserMedia) {
+        return "This browser does not expose camera access. Try Chrome, Edge, or Safari.";
+      }
+
+      if (name === "NotAllowedError" || message.includes("NotAllowedError")) {
+        return "Camera access denied. Allow camera permission in browser settings.";
+      }
+
+      if (name === "NotFoundError" || message.includes("NotFoundError")) {
+        return "No camera found on this device.";
+      }
+
+      if (name === "NotReadableError" || message.includes("NotReadableError")) {
+        return "Camera is already in use by another app or browser tab.";
+      }
+
+      return message || "Camera failed to start.";
+    };
 
     const start = async () => {
       // Wait for #reader div to mount
       await new Promise((r) => setTimeout(r, 400));
       if (cancelled) return;
+
+      if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
+        const message = getCameraErrorMessage(null);
+        setCameraError(message);
+        toast.error(message);
+        return;
+      }
 
       const scanner = new Html5Qrcode("reader");
       scannerRef.current = scanner;
@@ -49,14 +85,9 @@ export const ScannerOverlay: React.FC<ScannerOverlayProps> = ({
           await scanner.start({ facingMode: "user" }, SCANNER_CONFIG, onScan, () => {});
         } catch (err: any) {
           if (cancelled) return;
-          const msg = err?.message ?? "";
-          if (msg.includes("NotAllowedError")) {
-            toast.error("Camera access denied. Allow permissions in browser settings.");
-          } else if (msg.includes("NotFoundError")) {
-            toast.error("No camera found on this device.");
-          } else {
-            toast.error("Camera failed. Ensure HTTPS or localhost.");
-          }
+          const message = getCameraErrorMessage(err);
+          setCameraError(message);
+          toast.error(message);
         }
       }
     };
@@ -126,6 +157,12 @@ export const ScannerOverlay: React.FC<ScannerOverlayProps> = ({
             </div>
           </div>
         </div>
+
+        {cameraError && (
+          <div className="mt-6 max-w-sm rounded-lg border border-white/15 bg-white/10 px-4 py-3 text-center text-body-sm text-white backdrop-blur-md">
+            {cameraError}
+          </div>
+        )}
       </div>
 
       {/* Bottom */}
