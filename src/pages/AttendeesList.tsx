@@ -167,9 +167,18 @@ const AttendeesList: React.FC = () => {
                   No attendees found.
                 </div>
               ) : (
-                paginatedAttendees.map((attendee) => (
+                paginatedAttendees.map((attendee, index) => (
                   <div
-                    key={attendee.attendeeId ?? attendee.id}
+                    key={
+                      attendee.pass?.passId ??
+                      [
+                        attendee.attendeeId ?? attendee.id,
+                        attendee.pass?.eventSessionId,
+                        index,
+                      ]
+                        .filter(Boolean)
+                        .join('-')
+                    }
                     className="p-4 space-y-3"
                   >
                     <div className="flex items-start justify-between gap-3">

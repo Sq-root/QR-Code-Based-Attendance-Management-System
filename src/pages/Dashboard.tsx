@@ -37,11 +37,16 @@ const formatTime = (value?: string) => {
   });
 };
 
-const attendeeToLog = (attendee: Attendee): ActivityLog => {
+const attendeeToLog = (attendee: Attendee, index: number): ActivityLog => {
   const name = attendee.fullName || "Unknown Attendee";
 
   return {
-    id: String(attendee.attendeeId ?? attendee.id ?? name),
+    id: String(
+      attendee.pass?.passId ??
+        [attendee.attendeeId ?? attendee.id ?? name, attendee.pass?.eventSessionId, index]
+          .filter(Boolean)
+          .join("-"),
+    ),
     name,
     initials: getInitials(name),
     avatarBg: "bg-primary-fixed text-on-primary-fixed",

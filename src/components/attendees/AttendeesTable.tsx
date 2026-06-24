@@ -49,12 +49,15 @@ export const AttendeesTable: React.FC<AttendeesTableProps> = ({
               </TableCell>
             </TableRow>
           ) : (
-            attendees.map((attendee) => {
+            attendees.map((attendee, index) => {
               const displayId = attendee.attendeeId ?? attendee.id;
+              const rowKey =
+                attendee.pass?.passId ??
+                [displayId, attendee.pass?.eventSessionId, index].filter(Boolean).join('-');
 
               return (
                 <TableRow
-                  key={displayId}
+                  key={rowKey}
                   className="group hover:bg-surface-container-low/40 transition-colors duration-150 border-b border-outline-variant/50"
                 >
                   <TableCell className="!py-3 !px-6">
