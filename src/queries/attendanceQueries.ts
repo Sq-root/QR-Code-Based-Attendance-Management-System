@@ -30,6 +30,12 @@ export const useCheckIn = () => {
   });
 };
 
+export const useCheckInAttendee = (sessionId: string) => {
+  return useMutation<CheckInResponse, ApiError, string | number>({
+    mutationFn: (attendeeId) => attendanceService.checkInAttendee(sessionId, attendeeId),
+  });
+};
+
 export const useBulkUpload = (sessionId: string) => {
   return useMutation<BulkUploadResponse, ApiError, File>({
     mutationFn: (file) => attendanceService.bulkUpload(sessionId, file),

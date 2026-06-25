@@ -68,6 +68,19 @@ export const attendanceService = {
     return response.data;
   },
 
+  async checkInAttendee(sessionId: string, attendeeId: string | number): Promise<CheckInResponse> {
+    console.log('[Attendance Service] Direct attendee check-in request started', {
+      sessionId,
+      attendeeId,
+    });
+
+    const response = await api.post<CheckInResponse>(
+      API_ENDPOINTS.CHECK_IN_ATTENDEE(sessionId, String(attendeeId)),
+    );
+    console.log('[Attendance Service] Direct attendee check-in request completed', response.data);
+    return response.data;
+  },
+
   async bulkUpload(sessionId: string, file: File): Promise<BulkUploadResponse> {
     console.log('[Attendance Service] Bulk upload request started', {
       sessionId,

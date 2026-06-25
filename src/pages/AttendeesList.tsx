@@ -6,7 +6,7 @@ import AttendeesFiltersBar from '../components/attendees/AttendeesFiltersBar';
 import AttendeesTable from '../components/attendees/AttendeesTable';
 import PaginationControls from '../components/attendees/PaginationControls';
 import { EVENT_SESSION_ID, AUTH_KEYS, ROUTES } from '../constants';
-import { useAttendees, useCheckIn, useIssuePass } from '../queries/attendanceQueries';
+import { useAttendees, useCheckInAttendee, useIssuePass } from '../queries/attendanceQueries';
 import { toast } from 'sonner';
 import type { Attendee } from '../types';
 
@@ -18,18 +18,6 @@ const getAttendeePhone = (attendee: Attendee) =>
 const normalizeSearchText = (value?: string | number | null) =>
   String(value ?? '').toLowerCase();
 
-const getScannerDeviceId = () => {
-  const storageKey = 'scanner_device_id';
-  const existingId = localStorage.getItem(storageKey);
-
-  if (existingId) {
-    return existingId;
-  }
-
-  const newId = `web-${crypto.randomUUID()}`;
-  localStorage.setItem(storageKey, newId);
-  return newId;
-};
 
 const AttendeesList: React.FC = () => {
   const navigate = useNavigate();
@@ -38,7 +26,7 @@ const AttendeesList: React.FC = () => {
 
   const attendeesQuery = useAttendees(EVENT_SESSION_ID, hasValidSessionId);
   const issuePassMutation = useIssuePass(EVENT_SESSION_ID);
-  const checkInMutation = useCheckIn();
+  const checkInAttendeeMutation = useCheckInAttendee(EVENT_SESSION_ID);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -146,7 +134,6 @@ const AttendeesList: React.FC = () => {
   };
 
   const handleAttendanceClick = (attendee: Attendee) => {
-    const ticket = attendee.qrToken;
     const displayId = getAttendeeDisplayId(attendee);
 
     if (!displayId) {
@@ -156,46 +143,30 @@ const AttendeesList: React.FC = () => {
       return;
     }
 
-    if (!ticket?.payload || !ticket.signature) {
-      toast.error('QR token missing', {
-        description: 'Cannot mark attendance because this attendee has no QR token.',
-      });
-      return;
-    }
-
     setLoadingAttendanceAttendeeId(displayId);
 
-    checkInMutation.mutate(
-      {
-        payload: ticket.payload,
-        signature: ticket.signature,
-        scannerDeviceId: getScannerDeviceId(),
-        deviceScanId: crypto.randomUUID(),
-        source: 'attendees_list',
+    checkInAttendeeMutation.mutate(displayId, {
+      onSuccess: (response) => {
+        setSuccessAttendanceAttendeeId(displayId);
+        toast.success('Attendance marked', {
+          description: response.message || `${response.attendeeName || attendee.fullName} marked present.`,
+          duration: 4000,
+        });
+        attendeesQuery.refetch();
+        setTimeout(() => setSuccessAttendanceAttendeeId(null), 3000);
+        console.log('[AttendeesList] Attendance success:', response);
       },
-      {
-        onSuccess: (response) => {
-          setSuccessAttendanceAttendeeId(displayId);
-          toast.success('Attendance marked', {
-            description: response.message || `${response.attendeeName || attendee.fullName} marked present.`,
-            duration: 4000,
-          });
-          attendeesQuery.refetch();
-          setTimeout(() => setSuccessAttendanceAttendeeId(null), 3000);
-          console.log('[AttendeesList] Attendance success:', response);
-        },
-        onError: (error) => {
-          console.error('[AttendeesList] Attendance failed:', error);
-          toast.error('Failed to mark attendance', {
-            description: error.message || 'Backend rejected this QR ticket.',
-            duration: 5000,
-          });
-        },
-        onSettled: () => {
-          setLoadingAttendanceAttendeeId(null);
-        },
+      onError: (error) => {
+        console.error('[AttendeesList] Attendance failed:', error);
+        toast.error('Failed to mark attendance', {
+          description: error.message || 'Unable to mark attendance. Please try again.',
+          duration: 5000,
+        });
       },
-    );
+      onSettled: () => {
+        setLoadingAttendanceAttendeeId(null);
+      },
+    });
   };
 
   const handleLogout = () => {

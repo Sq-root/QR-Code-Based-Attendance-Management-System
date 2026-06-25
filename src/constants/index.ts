@@ -21,6 +21,7 @@ export const API_ENDPOINTS = {
   LOGIN: '/auth/login',
   ISSUE_PASS: (sessionId: string) => `/event-sessions/${sessionId}/passes:issue`,
   CHECK_IN: (sessionId: string) => `/event-sessions/${sessionId}/check-ins`,
+  CHECK_IN_ATTENDEE: (sessionId: string, attendeeId: string) => `/event-sessions/${sessionId}/attendees/${attendeeId}/check-in`,
   BULK_UPLOAD: (sessionId: string) => `/event-sessions/${sessionId}/bulk-upload`,
   BULK_UPLOAD_JOB: (jobId: string) => `/bulk-upload/jobs/${jobId}`,
   GET_ATTENDEES: (sessionId: string) => `/event-sessions/${sessionId}/attendees`,
