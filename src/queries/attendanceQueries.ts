@@ -7,6 +7,8 @@ import type {
   BulkUploadResponse,
   CheckInRequest,
   CheckInResponse,
+  DashboardRequestParams,
+  DashboardStats,
   IssuePassRequest,
   IssuePassResponse,
   RegisterAttendeeRequest,
@@ -16,6 +18,8 @@ import type {
 export const attendanceQueryKeys = {
   bulkUploadJob: (jobId: string) => ['bulk-upload-job', jobId] as const,
   attendees: (sessionId: string) => ['attendees', sessionId] as const,
+  dashboard: (sessionId: string, params: DashboardRequestParams) =>
+    ['dashboard', sessionId, params] as const,
 };
 
 export const useIssuePass = (sessionId: string) => {
@@ -51,6 +55,19 @@ export const useBulkUploadJob = (jobId: string, enabled = true) => {
       const status = query.state.data?.status?.toLowerCase();
       return status === 'completed' || status === 'failed' ? false : 3000;
     },
+  });
+};
+
+export const useDashboardStats = (
+  sessionId: string,
+  enabled = true,
+  params: DashboardRequestParams = {},
+) => {
+  return useQuery<DashboardStats, ApiError>({
+    queryKey: attendanceQueryKeys.dashboard(sessionId, params),
+    queryFn: () => attendanceService.getDashboard(sessionId, params),
+    enabled: enabled && Boolean(sessionId),
+    placeholderData: keepPreviousData,
   });
 };
 

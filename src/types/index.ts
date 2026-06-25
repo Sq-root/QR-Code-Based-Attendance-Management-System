@@ -89,6 +89,27 @@ export interface BulkUploadJob {
   message?: string;
 }
 
+export interface DashboardRequestParams {
+  attendeeRole?: string;
+  gender?: string;
+  source?: string;
+}
+
+export interface DashboardStats {
+  totalRegistered?: number;
+  registeredCount?: number;
+  totalAttendees?: number;
+  totalYouth?: number;
+  total?: number;
+  presentToday?: number;
+  presentCount?: number;
+  checkedInCount?: number;
+  present?: number;
+  attendanceRate?: number | string;
+  attendancePercentage?: number | string;
+  rate?: number | string;
+}
+
 export interface Attendee {
   attendeeId?: string;
   id?: string | number;

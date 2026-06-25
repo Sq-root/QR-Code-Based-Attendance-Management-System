@@ -53,7 +53,7 @@
   --color-outline: #76777d;
   --color-outline-variant: #c6c6cd;
   --color-surface-tint: #565e74;
-  --color-primary: #000000;
+  --color-primary: #131b2e;
   --color-on-primary: #ffffff;
   --color-primary-container: #131b2e;
   --color-on-primary-container: #7c839b;
@@ -62,10 +62,20 @@
   --color-on-secondary: #ffffff;
   --color-secondary-container: #316bf3;
   --color-on-secondary-container: #fefcff;
-  --color-tertiary: #000000;
+  --color-tertiary: #131b2e;
   --color-on-tertiary: #ffffff;
   --color-tertiary-container: #002113;
   --color-on-tertiary-container: #009668;
+
+  /* Semantic status — single source of truth for attendance states */
+  --color-success: #059669;
+  --color-on-success: #ffffff;
+  --color-success-container: #d1fae5;
+  --color-on-success-container: #065f46;
+  --color-warning: #d97706;
+  --color-on-warning: #ffffff;
+  --color-warning-container: #fef3c7;
+  --color-on-warning-container: #92400e;
   --color-error: #ba1a1a;
   --color-on-error: #ffffff;
   --color-error-container: #ffdad6;

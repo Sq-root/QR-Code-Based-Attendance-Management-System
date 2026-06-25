@@ -6,6 +6,8 @@ import type {
   BulkUploadResponse,
   CheckInRequest,
   CheckInResponse,
+  DashboardRequestParams,
+  DashboardStats,
   Attendee,
   GetAttendeesResponse,
   IssuePassRequest,
@@ -80,6 +82,18 @@ export const attendanceService = {
       API_ENDPOINTS.CHECK_IN_ATTENDEE(sessionId, String(attendeeId)),
     );
     logger.info('[Attendance Service] Direct attendee check-in request completed', response.data);
+    return response.data;
+  },
+
+  async getDashboard(
+    sessionId: string,
+    params: DashboardRequestParams = {},
+  ): Promise<DashboardStats> {
+    logger.info('[Attendance Service] Dashboard request started', { sessionId, params });
+    const response = await api.get<DashboardStats>(API_ENDPOINTS.DASHBOARD(sessionId), {
+      params,
+    });
+    logger.info('[Attendance Service] Dashboard request completed', response.data);
     return response.data;
   },
 

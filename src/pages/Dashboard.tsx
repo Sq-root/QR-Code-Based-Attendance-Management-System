@@ -5,7 +5,7 @@ import { Button } from "../components/ui/button";
 import type { ActivityLog } from "../mock/attendanceData";
 import { AUTH_KEYS, EVENT_SESSION_ID, ROUTES } from "../constants";
 import { toast } from "sonner";
-import { useAttendees, useCheckIn } from "../queries/attendanceQueries";
+import { useAttendees, useCheckIn, useDashboardStats } from "../queries/attendanceQueries";
 import type { Attendee, QrPayload } from "../types";
 import { logger } from "../lib/logger";
 
@@ -36,6 +36,35 @@ const formatTime = (value?: string) => {
     hour: "2-digit",
     minute: "2-digit",
   });
+};
+
+const dashboardRequestParams = {
+  source: "WEB",
+};
+
+const firstMetricValue = (
+  values: Array<number | string | undefined>,
+  fallback: string | number = "-",
+) => values.find((value) => value !== undefined && value !== null && value !== "") ?? fallback;
+
+const formatCount = (value: number | string | undefined) => {
+  if (value === undefined || value === null || value === "") {
+    return "-";
+  }
+
+  return typeof value === "number" ? value.toLocaleString() : value;
+};
+
+const formatRate = (value: number | string | undefined) => {
+  if (value === undefined || value === null || value === "") {
+    return "-";
+  }
+
+  if (typeof value === "number") {
+    return `${Number.isInteger(value) ? value : value.toFixed(1)}%`;
+  }
+
+  return value.includes("%") ? value : `${value}%`;
 };
 
 const attendeeToLog = (attendee: Attendee, index: number): ActivityLog => {
@@ -72,6 +101,11 @@ export const Dashboard: React.FC = () => {
   const hasValidSessionId =
     Boolean(EVENT_SESSION_ID) && EVENT_SESSION_ID !== "replace-with-session-id-from-backend-logs";
   const checkInMutation = useCheckIn();
+  const dashboardQuery = useDashboardStats(
+    EVENT_SESSION_ID,
+    hasValidSessionId,
+    dashboardRequestParams,
+  );
   const attendanceLogsQuery = useAttendees(EVENT_SESSION_ID, hasValidSessionId, 'PRESENT');
 
   // Extra logs from scans are kept locally until backend exposes attendance-record list.
@@ -105,7 +139,11 @@ export const Dashboard: React.FC = () => {
 
   const handleRefresh = useCallback(() => {
     setIsRefreshing(true);
-    toast.promise(attendanceLogsQuery.refetch().finally(() => setIsRefreshing(false)), {
+    toast.promise(
+      Promise.all([attendanceLogsQuery.refetch(), dashboardQuery.refetch()]).finally(() =>
+        setIsRefreshing(false),
+      ),
+      {
       loading: "Refreshing attendance records...",
       success: () => {
         setSearchQuery("");
@@ -114,7 +152,7 @@ export const Dashboard: React.FC = () => {
       },
       error: "Failed to refresh records.",
     });
-  }, [attendanceLogsQuery]);
+  }, [attendanceLogsQuery, dashboardQuery]);
 
   // Trigger Scanner View
   const handleOpenScanner = useCallback(() => {
@@ -220,6 +258,8 @@ export const Dashboard: React.FC = () => {
           setScanLogs((prev) => [newLog, ...prev]);
           setScannerSuccessName(attendeeName);
           setScannerOpen(false);
+          dashboardQuery.refetch();
+          attendanceLogsQuery.refetch();
 
           toast.success("Attendance Recorded", {
             description: response.message || `${attendeeName} marked present.`,
@@ -262,10 +302,33 @@ export const Dashboard: React.FC = () => {
     [endIndex, filteredLogs, startIndex],
   );
 
-  const successfulLogCount = useMemo(
-    () => logs.filter((log) => log.status === "Present" || log.status === "Success").length,
-    [logs],
-  );
+  const dashboardMetrics = useMemo(() => {
+    const stats = dashboardQuery.data;
+    const totalRegistered = firstMetricValue([
+      stats?.totalRegistered,
+      stats?.registeredCount,
+      stats?.totalAttendees,
+      stats?.totalYouth,
+      stats?.total,
+    ]);
+    const presentToday = firstMetricValue([
+      stats?.presentToday,
+      stats?.presentCount,
+      stats?.checkedInCount,
+      stats?.present,
+    ]);
+    const attendanceRate = firstMetricValue([
+      stats?.attendanceRate,
+      stats?.attendancePercentage,
+      stats?.rate,
+    ]);
+
+    return {
+      totalRegistered: formatCount(totalRegistered),
+      presentToday: formatCount(presentToday),
+      attendanceRate: formatRate(attendanceRate),
+    };
+  }, [dashboardQuery.data]);
 
   const handleLogSearchChange = useCallback((q: string) => {
     setSearchQuery(q);
@@ -321,9 +384,9 @@ export const Dashboard: React.FC = () => {
 
           {/* KPI Summary Bento Grid */}
           <MetricGrid
-            totalRegistered="1,248"
-            presentToday={successfulLogCount + 958}
-            attendanceRate="78.8%"
+            totalRegistered={dashboardMetrics.totalRegistered}
+            presentToday={dashboardMetrics.presentToday}
+            attendanceRate={dashboardMetrics.attendanceRate}
           />
 
           {/* Quick Actions (Mobile emphasis, hidden on desktop) */}

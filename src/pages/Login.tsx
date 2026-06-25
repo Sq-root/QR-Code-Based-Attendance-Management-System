@@ -52,10 +52,10 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex font-sans antialiased bg-[#f2f4f6] select-none">
+    <div className="min-h-screen flex font-sans antialiased bg-surface-container-low">
 
       {/* ── LEFT PANEL — desktop only ─────────────────── */}
-      <div className="hidden lg:flex lg:w-[52%] relative flex-col justify-between p-14 overflow-hidden bg-white border-r border-[#e0e3e5]">
+      <div className="hidden lg:flex lg:w-[52%] relative flex-col justify-between p-14 overflow-hidden bg-surface-container-lowest border-r border-outline-variant">
 
         {/* Subtle blue blob top-left */}
         <div className="pointer-events-none absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full blur-[140px] opacity-40"
@@ -65,20 +65,20 @@ export const Login: React.FC = () => {
 
         {/* Brand top */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#0051d5] flex items-center justify-center shadow-md">
-            <QrCode className="w-5 h-5 text-white" />
+          <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center shadow-md">
+            <QrCode className="w-5 h-5 text-on-secondary" />
           </div>
-          <span className="text-xl font-bold text-[#191c1e] tracking-tight">{APP_NAME}</span>
+          <span className="text-xl font-bold text-on-surface tracking-tight">{APP_NAME}</span>
         </div>
 
         {/* Hero content */}
         <div className="relative z-10 flex flex-col gap-10">
           <div>
-            <h2 className="text-[52px] font-bold text-[#191c1e] leading-[1.1] tracking-tight">
+            <h2 className="text-[52px] font-bold text-on-surface leading-[1.1] tracking-tight">
               Attendance,<br />
-              <span className="text-[#0051d5]">Reimagined.</span>
+              <span className="text-secondary">Reimagined.</span>
             </h2>
-            <p className="mt-4 text-[#45464d] text-lg leading-relaxed max-w-sm">
+            <p className="mt-4 text-on-surface-variant text-lg leading-relaxed max-w-sm">
               Fast QR-based attendance tracking built for modern institutions.
             </p>
           </div>
@@ -87,9 +87,9 @@ export const Login: React.FC = () => {
           <div className="flex flex-wrap gap-3">
             {FEATURES.map(({ icon: Icon, label }) => (
               <div key={label}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#f2f4f6] border border-[#e0e3e5] hover:border-[#0051d5]/40 hover:bg-[#dbe1ff]/30 transition-all duration-200 cursor-default">
-                <Icon className="w-4 h-4 text-[#0051d5]" />
-                <span className="text-sm font-medium text-[#45464d]">{label}</span>
+                className="flex items-center gap-2 px-4 py-2.5 rounded-full bg-surface-container-low border border-outline-variant hover:border-secondary/40 hover:bg-secondary-fixed/30 transition-all duration-200 cursor-default">
+                <Icon className="w-4 h-4 text-secondary" />
+                <span className="text-sm font-medium text-on-surface-variant">{label}</span>
               </div>
             ))}
           </div>
@@ -97,7 +97,7 @@ export const Login: React.FC = () => {
 
         </div>
 
-        <p className="relative z-10 text-xs text-[#c6c6cd]">© {new Date().getFullYear()} {APP_NAME}</p>
+        <p className="relative z-10 text-xs text-on-surface-variant">© {new Date().getFullYear()} {APP_NAME}</p>
       </div>
 
       {/* ── RIGHT PANEL — form ────────────────────────── */}
@@ -111,25 +111,25 @@ export const Login: React.FC = () => {
 
           {/* Mobile brand header */}
           <div className="lg:hidden flex flex-col items-center gap-3 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-[#0051d5] flex items-center justify-center shadow-lg">
-              <QrCode className="w-7 h-7 text-white" />
+            <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center shadow-lg">
+              <QrCode className="w-7 h-7 text-on-secondary" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-[#191c1e] tracking-tight">{APP_NAME}</h1>
-              <p className="text-sm text-[#76777d] mt-0.5">QR Attendance Management</p>
+              <h1 className="text-2xl font-bold text-on-surface tracking-tight">{APP_NAME}</h1>
+              <p className="text-sm text-on-surface-variant mt-0.5">QR Attendance Management</p>
             </div>
           </div>
 
           {/* Form card */}
-          <div className="bg-white rounded-2xl border border-[#e0e3e5] shadow-xl shadow-black/5 p-8 flex flex-col gap-6">
+          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant shadow-xl shadow-black/5 p-8 flex flex-col gap-6">
 
             <div>
-              <h2 className="text-xl font-bold text-[#191c1e]">Sign in</h2>
-              <p className="text-sm text-[#76777d] mt-1">Enter your credentials to continue</p>
+              <h2 className="text-xl font-bold text-on-surface">Sign in</h2>
+              <p className="text-sm text-on-surface-variant mt-1">Enter your credentials to continue</p>
             </div>
 
             {apiError && (
-              <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl text-sm text-[#ba1a1a] bg-[#ffdad6]/60 border border-[#ba1a1a]/20">
+              <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl text-sm text-error bg-error-container/60 border border-error/20">
                 <ShieldCheck className="w-4 h-4 shrink-0" />
                 {apiError}
               </div>
@@ -139,53 +139,53 @@ export const Login: React.FC = () => {
 
               {/* Email / ID */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="identifier" className="text-sm font-semibold text-[#191c1e]">
-                  Email
+                <label htmlFor="identifier" className="text-sm font-semibold text-on-surface">
+                  Email or ID
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#76777d] pointer-events-none" />
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-outline pointer-events-none" />
                   <input
                     id="identifier"
                     type="text"
                     placeholder="admin@school.edu"
                     {...register('identifier')}
                     disabled={loginMutation.isPending}
-                    className={`w-full h-12 pl-10 pr-4 rounded-xl text-sm text-[#191c1e] placeholder-[#c6c6cd] bg-[#f7f9fb] outline-none transition-all duration-200 disabled:opacity-50 border ${
+                    className={`w-full h-12 pl-10 pr-4 rounded-xl text-sm text-on-surface placeholder-outline-variant bg-surface outline-none transition-all duration-200 disabled:opacity-50 border ${
                       errors.identifier
-                        ? 'border-[#ba1a1a] focus:ring-2 focus:ring-[#ba1a1a]/20'
-                        : 'border-[#e0e3e5] focus:border-[#0051d5] focus:ring-2 focus:ring-[#0051d5]/15'
+                        ? 'border-error focus:ring-2 focus:ring-error/20'
+                        : 'border-outline-variant focus:border-secondary focus:ring-2 focus:ring-secondary/15'
                     }`}
                   />
                 </div>
-                {errors.identifier && <span className="text-xs text-[#ba1a1a] pl-0.5">{errors.identifier.message}</span>}
+                {errors.identifier && <span className="text-xs text-error pl-0.5">{errors.identifier.message}</span>}
               </div>
 
               {/* Password */}
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="password" className="text-sm font-semibold text-[#191c1e]">
+                <label htmlFor="password" className="text-sm font-semibold text-on-surface">
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#76777d] pointer-events-none" />
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-outline pointer-events-none" />
                   <input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     {...register('password')}
                     disabled={loginMutation.isPending}
-                    className={`w-full h-12 pl-10 pr-11 rounded-xl text-sm text-[#191c1e] placeholder-[#c6c6cd] bg-[#f7f9fb] outline-none transition-all duration-200 disabled:opacity-50 border ${
+                    className={`w-full h-12 pl-10 pr-11 rounded-xl text-sm text-on-surface placeholder-outline-variant bg-surface outline-none transition-all duration-200 disabled:opacity-50 border ${
                       errors.password
-                        ? 'border-[#ba1a1a] focus:ring-2 focus:ring-[#ba1a1a]/20'
-                        : 'border-[#e0e3e5] focus:border-[#0051d5] focus:ring-2 focus:ring-[#0051d5]/15'
+                        ? 'border-error focus:ring-2 focus:ring-error/20'
+                        : 'border-outline-variant focus:border-secondary focus:ring-2 focus:ring-secondary/15'
                     }`}
                   />
                   <button type="button" aria-label="Toggle password visibility"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#76777d] hover:text-[#45464d] cursor-pointer transition-colors">
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface-variant cursor-pointer transition-colors">
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
-                {errors.password && <span className="text-xs text-[#ba1a1a] pl-0.5">{errors.password.message}</span>}
+                {errors.password && <span className="text-xs text-error pl-0.5">{errors.password.message}</span>}
               </div>
 
               {/* Submit */}
@@ -193,7 +193,7 @@ export const Login: React.FC = () => {
                 id="login-submit-btn"
                 type="submit"
                 disabled={loginMutation.isPending}
-                className="w-full h-12 mt-1 rounded-xl bg-[#0051d5] hover:bg-[#003ea8] active:scale-[0.98] text-white font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer transition-all duration-200 shadow-lg shadow-[#0051d5]/25 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full h-12 mt-1 rounded-xl bg-secondary hover:bg-on-secondary-fixed-variant active:scale-[0.98] text-on-secondary font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer transition-all duration-200 shadow-lg shadow-secondary/25 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loginMutation.isPending ? (
                   <><LoadingSpinner size="sm" label="" /><span>Signing in...</span></>
@@ -203,12 +203,12 @@ export const Login: React.FC = () => {
               </button>
             </form>
 
-            <p className="text-center text-xs text-[#c6c6cd]">
+            <p className="text-center text-xs text-on-surface-variant">
               Demo: use any email &amp; password with 6+ characters
             </p>
           </div>
 
-          <p className="text-center text-xs text-[#c6c6cd] lg:hidden">
+          <p className="text-center text-xs text-on-surface-variant lg:hidden">
             © {new Date().getFullYear()} {APP_NAME}
           </p>
         </div>

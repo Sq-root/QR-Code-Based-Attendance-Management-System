@@ -51,8 +51,10 @@ export const AttendanceLogsTable: React.FC<AttendanceLogsTableProps> = ({ logs }
                 <TableCell className="!py-2 !px-6 text-right">
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full font-sans text-[10px] font-bold uppercase tracking-wider ${
                     log.status === 'Present' || log.status === 'Success'
-                      ? 'bg-tertiary-fixed/20 text-on-tertiary-container border border-on-tertiary-container/15'
-                      : 'bg-error-container text-on-error-container border border-error/20'
+                      ? 'bg-success-container text-on-success-container border border-on-success-container/15'
+                      : log.status === 'Late'
+                        ? 'bg-warning-container text-on-warning-container border border-on-warning-container/15'
+                        : 'bg-error-container text-on-error-container border border-error/20'
                   }`}>
                     {log.status}
                   </span>
