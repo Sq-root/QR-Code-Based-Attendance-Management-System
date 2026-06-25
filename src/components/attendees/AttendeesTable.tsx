@@ -103,7 +103,7 @@ export const AttendeesTable: React.FC<AttendeesTableProps> = React.memo(({
                         disabled={!canIssueQr || isQrLoading || isAttendanceLoading}
                         className={`inline-flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group/btn ${
                           isQrSuccess
-                            ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
+                            ? 'bg-success-container text-on-success-container hover:bg-success-container/80'
                             : 'bg-secondary-fixed text-on-secondary-fixed-variant hover:bg-secondary-fixed-dim'
                         }`}
                         title={isQrSuccess ? 'QR pass issued' : 'Issue QR pass'}
@@ -121,7 +121,7 @@ export const AttendeesTable: React.FC<AttendeesTableProps> = React.memo(({
                         disabled={!canMarkAttendance || isQrLoading || isAttendanceLoading}
                         className={`inline-flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed group/btn ${
                           isAttendanceSuccess
-                            ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
+                            ? 'bg-success-container text-on-success-container hover:bg-success-container/80'
                             : 'bg-tertiary-fixed text-on-tertiary-fixed-variant hover:bg-tertiary-fixed-dim'
                         }`}
                         title={isAttendanceSuccess ? 'Attendance marked' : 'Mark attendance'}

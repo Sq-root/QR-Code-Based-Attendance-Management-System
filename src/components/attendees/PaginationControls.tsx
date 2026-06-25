@@ -23,12 +23,12 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <div className="border-t border-gray-200 bg-white">
+    <div className="border-t border-outline-variant bg-surface-container-lowest">
       <div className="px-4 py-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="text-sm text-gray-600 font-sans">
-          Showing <span className="font-semibold text-gray-900">{startItem}</span> to{' '}
-          <span className="font-semibold text-gray-900">{endItem}</span> of{' '}
-          <span className="font-semibold text-gray-900">{totalItems}</span> attendees
+        <div className="text-sm text-on-surface-variant font-sans">
+          Showing <span className="font-semibold text-on-surface">{startItem}</span> to{' '}
+          <span className="font-semibold text-on-surface">{endItem}</span> of{' '}
+          <span className="font-semibold text-on-surface">{totalItems}</span> attendees
         </div>
 
         <div className="flex items-center justify-center gap-2">
@@ -37,14 +37,14 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
             size="sm"
             onClick={onPrevPage}
             disabled={currentPage === 1}
-            className="gap-1.5 h-9 px-3 cursor-pointer hover:bg-gray-200 transition-colors"
+            className="gap-1.5 h-9 px-3 cursor-pointer hover:bg-surface-container transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
             <span className="hidden sm:inline text-xs">Previous</span>
           </Button>
 
-          <div className="px-4 py-2 bg-gray-100 rounded-lg border border-gray-300 min-w-max">
-            <span className="text-sm font-semibold text-gray-900">
+          <div className="px-4 py-2 bg-surface-container-low rounded-lg border border-outline-variant min-w-max">
+            <span className="text-sm font-semibold text-on-surface">
               {currentPage} of {totalPages}
             </span>
           </div>
@@ -54,7 +54,7 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
             size="sm"
             onClick={onNextPage}
             disabled={currentPage === totalPages}
-            className="gap-1.5 h-9 px-3 cursor-pointer hover:bg-gray-200 transition-colors"
+            className="gap-1.5 h-9 px-3 cursor-pointer hover:bg-surface-container transition-colors"
           >
             <span className="hidden sm:inline text-xs">Next</span>
             <ChevronRight className="w-4 h-4" />

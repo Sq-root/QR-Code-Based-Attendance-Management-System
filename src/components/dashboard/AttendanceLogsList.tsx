@@ -25,8 +25,10 @@ export const AttendanceLogsList: React.FC<AttendanceLogsListProps> = ({ logs }) 
               <div className="flex-shrink-0">
                 <span className={`px-2 py-0.5 rounded-full font-sans text-[10px] font-bold uppercase tracking-wider ${
                   log.status === 'Present' || log.status === 'Success'
-                    ? 'bg-tertiary-fixed/20 text-on-tertiary-container'
-                    : 'bg-error-container text-on-error-container'
+                    ? 'bg-success-container text-on-success-container'
+                    : log.status === 'Late'
+                      ? 'bg-warning-container text-on-warning-container'
+                      : 'bg-error-container text-on-error-container'
                 }`}>
                   {log.status}
                 </span>

@@ -230,45 +230,45 @@ const AttendeesList: React.FC = () => {
                       attendee.pass?.passId ??
                       [displayId, attendee.pass?.eventSessionId, index].filter(Boolean).join('-')
                     }
-                    className="bg-white rounded-xl border border-gray-200 px-4 py-3 shadow-sm hover:shadow-md transition-shadow"
+                    className="bg-surface-container-lowest rounded-xl border border-outline-variant px-4 py-3 shadow-sm hover:shadow-md transition-shadow"
                   >
                     <div className="space-y-3">
                       <div>
                         <div className="mb-3">
-                          <p className="font-bold text-gray-900 text-sm">
+                          <p className="font-bold text-on-surface text-sm">
                             {attendee.fullName || '-'}
                           </p>
-                          <p className="text-gray-500 text-xs font-mono mt-0.5">
+                          <p className="text-on-surface-variant text-xs font-mono mt-0.5">
                             {getAttendeePhone(attendee) || '-'}
                           </p>
                         </div>
 
-                        <div className="space-y-2 pt-3 border-t border-gray-100">
+                        <div className="space-y-2 pt-3 border-t border-outline-variant/60">
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-gray-600 font-semibold text-xs">Child</span>
+                            <span className="text-on-surface-variant font-semibold text-xs">Child</span>
                             {attendee.youthName ? (
-                              <span className="bg-blue-100 text-blue-800 px-2.5 py-1 rounded-md font-semibold text-xs">
+                              <span className="bg-secondary/10 text-secondary px-2.5 py-1 rounded-md font-semibold text-xs">
                                 {attendee.youthName}
                               </span>
                             ) : (
-                              <span className="text-gray-400 text-xs">-</span>
+                              <span className="text-outline text-xs">-</span>
                             )}
                           </div>
                           {attendee.age && (
                             <div className="flex justify-between items-center text-xs">
-                              <span className="text-gray-600 font-semibold">Age</span>
-                              <span className="text-gray-900 font-medium">{attendee.age}</span>
+                              <span className="text-on-surface-variant font-semibold">Age</span>
+                              <span className="text-on-surface font-medium">{attendee.age}</span>
                             </div>
                           )}
                           {attendee.standard && (
                             <div className="flex justify-between items-center text-xs">
-                              <span className="text-gray-600 font-semibold">Standard</span>
-                              <span className="text-gray-900 font-medium">{attendee.standard}</span>
+                              <span className="text-on-surface-variant font-semibold">Standard</span>
+                              <span className="text-on-surface font-medium">{attendee.standard}</span>
                             </div>
                           )}
                           <div className="flex justify-between items-center text-xs">
-                            <span className="text-gray-600 font-semibold">Area</span>
-                            <span className="text-gray-900 font-medium text-right">
+                            <span className="text-on-surface-variant font-semibold">Area</span>
+                            <span className="text-on-surface font-medium text-right">
                               {attendee.residentialSuburb || '-'}
                             </span>
                           </div>
@@ -281,8 +281,8 @@ const AttendeesList: React.FC = () => {
                           disabled={isQrLoading || isAttendanceLoading}
                           className={`flex-1 inline-flex items-center justify-center gap-1.5 px-2 py-2 rounded-md text-xs font-medium transition-all duration-200 cursor-pointer ${
                             isQrSuccess
-                              ? 'bg-emerald-500 text-white hover:bg-emerald-600'
-                              : 'bg-blue-500 text-white hover:bg-blue-600'
+                              ? 'bg-success text-on-success hover:bg-on-success-container'
+                              : 'bg-secondary text-on-secondary hover:bg-on-secondary-fixed-variant'
                           } disabled:opacity-50 disabled:cursor-not-allowed active:scale-95`}
                           title={isQrSuccess ? 'QR pass issued' : 'Issue QR pass'}
                         >
@@ -300,8 +300,8 @@ const AttendeesList: React.FC = () => {
                           disabled={isQrLoading || isAttendanceLoading}
                           className={`flex-1 inline-flex items-center justify-center gap-1.5 px-2 py-2 rounded-md text-xs font-medium transition-all duration-200 cursor-pointer ${
                             isAttendanceSuccess
-                              ? 'bg-emerald-500 text-white hover:bg-emerald-600'
-                              : 'bg-teal-500 text-white hover:bg-teal-600'
+                              ? 'bg-success text-on-success hover:bg-on-success-container'
+                              : 'bg-tertiary-fixed-dim text-on-tertiary-fixed-variant hover:bg-tertiary-fixed'
                           } disabled:opacity-50 disabled:cursor-not-allowed active:scale-95`}
                           title={isAttendanceSuccess ? 'Attendance marked' : 'Mark attendance'}
                         >
