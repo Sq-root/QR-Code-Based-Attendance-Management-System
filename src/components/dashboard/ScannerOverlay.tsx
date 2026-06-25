@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import { X, ScanLine } from "lucide-react";
 import { toast } from "sonner";
-import { Html5Qrcode } from "html5-qrcode";
+import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
 import { SCANNER_CONFIG, APP_NAME } from "../../constants";
 
 interface ScannerOverlayProps {
@@ -12,6 +12,77 @@ interface ScannerOverlayProps {
   onScanSuccess: (decodedText: string) => void;
 }
 
+const CAMERA_FALLBACKS: MediaTrackConstraints[] = [
+  { facingMode: "environment" },
+  { facingMode: "user" },
+];
+
+const getCameraErrorMessage = (err: unknown) => {
+  const name = err instanceof DOMException ? err.name : "";
+  const message = err instanceof Error ? err.message : String(err ?? "");
+
+  if (!window.isSecureContext) {
+    return "Camera requires HTTPS, localhost, or 127.0.0.1. Open this app on a secure URL.";
+  }
+
+  if (!navigator.mediaDevices?.getUserMedia) {
+    return "This browser does not expose camera access. Try Chrome, Edge, or Safari.";
+  }
+
+  if (name === "NotAllowedError" || message.includes("NotAllowedError")) {
+    return "Camera access denied. Allow camera permission in browser settings.";
+  }
+
+  if (name === "NotFoundError" || message.includes("NotFoundError")) {
+    return "No camera found on this device.";
+  }
+
+  if (name === "NotReadableError" || message.includes("NotReadableError")) {
+    return "Camera is already in use by another app or browser tab.";
+  }
+
+  return message || "Camera failed to start.";
+};
+
+const browserCanUseCamera = () =>
+  window.isSecureContext && Boolean(navigator.mediaDevices?.getUserMedia);
+
+const startScanner = async (
+  scanner: Html5Qrcode,
+  onScan: (decodedText: string) => void,
+) => {
+  let lastError: unknown;
+
+  for (const cameraConfig of CAMERA_FALLBACKS) {
+    try {
+      await scanner.start(cameraConfig, SCANNER_CONFIG, onScan, () => {});
+      return;
+    } catch (err) {
+      lastError = err;
+    }
+  }
+
+  throw lastError;
+};
+
+const stopScanner = async (scanner: Html5Qrcode, readerId: string) => {
+  if (scanner.isScanning) {
+    try {
+      await scanner.stop();
+    } catch (err) {
+      console.warn("[ScannerOverlay] Failed to stop scanner", err);
+    }
+  }
+
+  if (!document.getElementById(readerId)) return;
+
+  try {
+    scanner.clear();
+  } catch (err) {
+    console.warn("[ScannerOverlay] Failed to clear scanner", err);
+  }
+};
+
 export const ScannerOverlay: React.FC<ScannerOverlayProps> = ({
   isOpen,
   onClose,
@@ -21,88 +92,71 @@ export const ScannerOverlay: React.FC<ScannerOverlayProps> = ({
 }) => {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const callbackRef = useRef(onScanSuccess);
+  const reactReaderId = useId();
+  const readerId = `qr-reader-${reactReaderId.replace(/:/g, "")}`;
   const [cameraError, setCameraError] = useState("");
-  callbackRef.current = onScanSuccess;
+
+  useEffect(() => {
+    callbackRef.current = onScanSuccess;
+  }, [onScanSuccess]);
 
   useEffect(() => {
     if (!isOpen) return;
 
-    let cancelled = false;
-    setCameraError("");
+    let active = true;
+    const scannerElement = document.getElementById(readerId);
 
-    const getCameraErrorMessage = (err: unknown) => {
-      const name = err instanceof DOMException ? err.name : "";
-      const message = err instanceof Error ? err.message : String(err ?? "");
+    const openCamera = async () => {
+      setCameraError("");
 
-      if (!window.isSecureContext) {
-        return "Camera requires HTTPS, localhost, or 127.0.0.1. Open this app on a secure URL.";
-      }
-
-      if (!navigator.mediaDevices?.getUserMedia) {
-        return "This browser does not expose camera access. Try Chrome, Edge, or Safari.";
-      }
-
-      if (name === "NotAllowedError" || message.includes("NotAllowedError")) {
-        return "Camera access denied. Allow camera permission in browser settings.";
-      }
-
-      if (name === "NotFoundError" || message.includes("NotFoundError")) {
-        return "No camera found on this device.";
-      }
-
-      if (name === "NotReadableError" || message.includes("NotReadableError")) {
-        return "Camera is already in use by another app or browser tab.";
-      }
-
-      return message || "Camera failed to start.";
-    };
-
-    const start = async () => {
-      // Wait for #reader div to mount
-      await new Promise((r) => setTimeout(r, 400));
-      if (cancelled) return;
-
-      if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
+      if (!browserCanUseCamera()) {
         const message = getCameraErrorMessage(null);
         setCameraError(message);
         toast.error(message);
         return;
       }
 
-      const scanner = new Html5Qrcode("reader");
+      if (!scannerElement) return;
+
+      const scanner = new Html5Qrcode(readerId);
       scannerRef.current = scanner;
 
       const onScan = (text: string) => {
-        if (scanner.isScanning) scanner.pause();
+        if (!active || scanner.getState() !== Html5QrcodeScannerState.SCANNING) return;
+
+        scanner.pause(true);
         callbackRef.current(text);
       };
 
       try {
-        await scanner.start({ facingMode: "environment" }, SCANNER_CONFIG, onScan, () => {});
-      } catch {
-        if (cancelled) return;
-        try {
-          await scanner.start({ facingMode: "user" }, SCANNER_CONFIG, onScan, () => {});
-        } catch (err: any) {
-          if (cancelled) return;
-          const message = getCameraErrorMessage(err);
-          setCameraError(message);
-          toast.error(message);
+        await startScanner(scanner, onScan);
+
+        if (!active) {
+          await stopScanner(scanner, readerId);
         }
-      }
-    };
+      } catch (err) {
+        if (!active) return;
 
-    start();
-
-    return () => {
-      cancelled = true;
-      const s = scannerRef.current;
-      if (s) {
-        s.stop().catch(() => {}).finally(() => s.clear());
+        const message = getCameraErrorMessage(err);
+        setCameraError(message);
+        toast.error(message);
+        await stopScanner(scanner, readerId);
         scannerRef.current = null;
       }
     };
-  }, [isOpen]);
+
+    void openCamera();
+
+    return () => {
+      active = false;
+      const scanner = scannerRef.current;
+
+      if (scanner) {
+        scannerRef.current = null;
+        void stopScanner(scanner, readerId);
+      }
+    };
+  }, [isOpen, readerId]);
 
   if (!isOpen) return null;
 
@@ -119,7 +173,7 @@ export const ScannerOverlay: React.FC<ScannerOverlayProps> = ({
         >
           <X className="w-5 h-5 text-white" />
         </button>
-        <div className="font-title-md text-white font-bold tracking-tight">{APP_NAME} Viewfinder</div>
+        <div className="font-title-md text-white font-bold tracking-tight">{APP_NAME} View</div>
         <div className="w-12" />
       </div>
 
@@ -132,8 +186,8 @@ export const ScannerOverlay: React.FC<ScannerOverlayProps> = ({
         <div className="relative w-64 h-64 sm:w-72 sm:h-72 flex items-center justify-center">
           {/* Camera feed */}
           <div
-            id="reader"
-            className={`absolute inset-0 rounded-xl overflow-hidden [&>video]:object-cover [&>video]:w-full [&>video]:h-full transition-opacity duration-300 ${successName ? "opacity-0" : "opacity-100"}`}
+            id={readerId}
+            className={`scanner-reader absolute inset-0 rounded-xl overflow-hidden [&_video]:object-cover [&_video]:w-full [&_video]:h-full transition-opacity duration-300 ${successName ? "opacity-0" : "opacity-100"}`}
             style={{ border: "none" }}
           />
 
