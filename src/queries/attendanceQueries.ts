@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import attendanceService from '../services/attendanceService';
 import type {
   ApiError,
@@ -59,6 +59,7 @@ export const useAttendees = (sessionId: string, enabled = true, status?: string)
     queryKey: status ? ['attendees', sessionId, status] : attendanceQueryKeys.attendees(sessionId),
     queryFn: () => attendanceService.getAttendees(sessionId, status),
     enabled: enabled && Boolean(sessionId),
+    placeholderData: keepPreviousData,
   });
 };
 

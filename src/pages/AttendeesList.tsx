@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useDeferredValue, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { QrCode, UserCheck, Check, Loader2 } from 'lucide-react';
 import AppShell from '../components/dashboard/AppShell';
@@ -9,6 +9,7 @@ import { EVENT_SESSION_ID, AUTH_KEYS, ROUTES } from '../constants';
 import { useAttendees, useCheckInAttendee, useIssuePass } from '../queries/attendanceQueries';
 import { toast } from 'sonner';
 import type { Attendee } from '../types';
+import { logger } from '../lib/logger';
 
 const getAttendeeDisplayId = (attendee: Attendee) => attendee.attendeeId ?? attendee.id;
 
@@ -35,16 +36,12 @@ const AttendeesList: React.FC = () => {
   const [loadingAttendanceAttendeeId, setLoadingAttendanceAttendeeId] = useState<string | number | null>(null);
   const [successAttendanceAttendeeId, setSuccessAttendanceAttendeeId] = useState<string | number | null>(null);
   const itemsPerPage = 25;
+  const deferredSearchQuery = useDeferredValue(searchQuery);
 
-  const filteredAttendees = useMemo(() => {
-    if (!attendeesQuery.data) return [];
-
-    const attendees = attendeesQuery.data;
-    const query = searchQuery.trim().toLowerCase();
-    if (!query) return attendees;
-
-    return attendees.filter((attendee) => {
-      const searchableText = [
+  const attendeesWithSearchText = useMemo(() => {
+    return (attendeesQuery.data ?? []).map((attendee) => ({
+      attendee,
+      searchText: [
         attendee.fullName,
         attendee.youthName,
         attendee.phoneE164,
@@ -53,11 +50,21 @@ const AttendeesList: React.FC = () => {
         attendee.residentialSuburb,
       ]
         .map(normalizeSearchText)
-        .join(' ');
+        .join(' '),
+    }));
+  }, [attendeesQuery.data]);
 
-      return searchableText.includes(query);
-    });
-  }, [attendeesQuery.data, searchQuery]);
+  const filteredAttendees = useMemo(() => {
+    const query = deferredSearchQuery.trim().toLowerCase();
+
+    if (!query) {
+      return attendeesWithSearchText.map(({ attendee }) => attendee);
+    }
+
+    return attendeesWithSearchText
+      .filter(({ searchText }) => searchText.includes(query))
+      .map(({ attendee }) => attendee);
+  }, [attendeesWithSearchText, deferredSearchQuery]);
 
   const totalItems = filteredAttendees.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
@@ -65,17 +72,17 @@ const AttendeesList: React.FC = () => {
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
   const paginatedAttendees = filteredAttendees.slice(startIndex, endIndex);
 
-  const handleSearchChange = (query: string) => {
+  const handleSearchChange = useCallback((query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
-  };
+  }, []);
 
-  const handleClearFilters = () => {
+  const handleClearFilters = useCallback(() => {
     setSearchQuery('');
     setCurrentPage(1);
-  };
+  }, []);
 
-  const handleQrClick = (attendee: Attendee) => {
+  const handleQrClick = useCallback((attendee: Attendee) => {
     const phoneNumber = getAttendeePhone(attendee);
     const fullName = attendee.fullName;
     const displayId = getAttendeeDisplayId(attendee);
@@ -116,10 +123,10 @@ const AttendeesList: React.FC = () => {
             duration: 4000,
           });
           setTimeout(() => setSuccessQrAttendeeId(null), 3000);
-          console.log('[AttendeesList] Issue pass success:', response);
+          logger.info('[AttendeesList] Issue pass success:', response);
         },
         onError: (error) => {
-          console.error('[AttendeesList] Issue pass failed:', error);
+          logger.error('[AttendeesList] Issue pass failed:', error);
           toast.error('Failed to issue QR pass', {
             description:
               error.message || 'Unable to issue QR pass. Please check the phone number and try again.',
@@ -131,9 +138,9 @@ const AttendeesList: React.FC = () => {
         },
       },
     );
-  };
+  }, [issuePassMutation]);
 
-  const handleAttendanceClick = (attendee: Attendee) => {
+  const handleAttendanceClick = useCallback((attendee: Attendee) => {
     const displayId = getAttendeeDisplayId(attendee);
 
     if (!displayId) {
@@ -154,10 +161,10 @@ const AttendeesList: React.FC = () => {
         });
         attendeesQuery.refetch();
         setTimeout(() => setSuccessAttendanceAttendeeId(null), 3000);
-        console.log('[AttendeesList] Attendance success:', response);
+        logger.info('[AttendeesList] Attendance success:', response);
       },
       onError: (error) => {
-        console.error('[AttendeesList] Attendance failed:', error);
+        logger.error('[AttendeesList] Attendance failed:', error);
         toast.error('Failed to mark attendance', {
           description: error.message || 'Unable to mark attendance. Please try again.',
           duration: 5000,
@@ -167,7 +174,7 @@ const AttendeesList: React.FC = () => {
         setLoadingAttendanceAttendeeId(null);
       },
     });
-  };
+  }, [attendeesQuery, checkInAttendeeMutation]);
 
   const handleLogout = () => {
     localStorage.removeItem(AUTH_KEYS.TOKEN);

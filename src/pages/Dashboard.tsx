@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Download, ScanLine, Plus } from "lucide-react";
 import { Button } from "../components/ui/button";
@@ -7,6 +7,7 @@ import { AUTH_KEYS, EVENT_SESSION_ID, ROUTES } from "../constants";
 import { toast } from "sonner";
 import { useAttendees, useCheckIn } from "../queries/attendanceQueries";
 import type { Attendee, QrPayload } from "../types";
+import { logger } from "../lib/logger";
 
 import AppShell from "../components/dashboard/AppShell";
 import MetricGrid from "../components/dashboard/MetricGrid";
@@ -92,7 +93,7 @@ export const Dashboard: React.FC = () => {
     navigate(ROUTES.LOGIN);
   };
 
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     setIsRefreshing(true);
     toast.promise(attendanceLogsQuery.refetch().finally(() => setIsRefreshing(false)), {
       loading: "Refreshing attendance records...",
@@ -103,14 +104,14 @@ export const Dashboard: React.FC = () => {
       },
       error: "Failed to refresh records.",
     });
-  };
+  }, [attendanceLogsQuery]);
 
   // Trigger Scanner View
-  const handleOpenScanner = () => {
+  const handleOpenScanner = useCallback(() => {
     setScannerOpen(true);
     setScannerScanning(true);
     setScannerSuccessName("");
-  };
+  }, []);
 
   const getScannerDeviceId = () => {
     const storageKey = "scanner_device_id";
@@ -126,7 +127,7 @@ export const Dashboard: React.FC = () => {
   };
 
   const parseQrTicket = (decodedText: string): { payload: QrPayload; signature: string } => {
-    console.log("[Dashboard Scanner] Raw QR text detected", decodedText);
+    logger.info("[Dashboard Scanner] Raw QR text detected", decodedText);
     const parsed = JSON.parse(decodedText);
 
     if (
@@ -150,7 +151,7 @@ export const Dashboard: React.FC = () => {
 
     try {
       ticket = parseQrTicket(decodedText);
-      console.log("[Dashboard Scanner] Parsed QR ticket", {
+      logger.info("[Dashboard Scanner] Parsed QR ticket", {
         passId: ticket.payload.pid,
         attendeeId: ticket.payload.aid,
         sessionId: ticket.payload.sid,
@@ -158,7 +159,7 @@ export const Dashboard: React.FC = () => {
         hasSignature: Boolean(ticket.signature),
       });
     } catch (error) {
-      console.error("[Dashboard Scanner] Invalid QR code", error);
+      logger.error("[Dashboard Scanner] Invalid QR code", error);
       setScannerScanning(false);
       toast.error("Invalid QR code", {
         description: error instanceof Error ? error.message : "Unable to read ticket data.",
@@ -183,7 +184,7 @@ export const Dashboard: React.FC = () => {
       },
       {
         onSuccess: (response) => {
-          console.log("[Dashboard Scanner] Check-in success", response);
+          logger.info("[Dashboard Scanner] Check-in success", response);
           const attendeeName = response.attendeeName || `Attendee ${ticket.payload.aid}`;
           const initials = attendeeName
             .split(" ")
@@ -215,7 +216,7 @@ export const Dashboard: React.FC = () => {
           });
         },
         onError: (error) => {
-          console.error("[Dashboard Scanner] Check-in failed", error);
+          logger.error("[Dashboard Scanner] Check-in failed", error);
           setScannerSuccessName("");
           toast.error("Check-in failed", {
             description: error.message || "Backend rejected this QR ticket.",
@@ -226,11 +227,19 @@ export const Dashboard: React.FC = () => {
   };
 
   // Filter logs based on search query
-  const filteredLogs = logs.filter(
-    (log) =>
-      log.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      log.session.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const filteredLogs = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    if (!query) {
+      return logs;
+    }
+
+    return logs.filter(
+      (log) =>
+        log.name.toLowerCase().includes(query) ||
+        log.session.toLowerCase().includes(query),
+    );
+  }, [logs, searchQuery]);
 
   const totalItems = filteredLogs.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
@@ -238,7 +247,20 @@ export const Dashboard: React.FC = () => {
   // Get current logs slice
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const paginatedLogs = filteredLogs.slice(startIndex, endIndex);
+  const paginatedLogs = useMemo(
+    () => filteredLogs.slice(startIndex, endIndex),
+    [endIndex, filteredLogs, startIndex],
+  );
+
+  const successfulLogCount = useMemo(
+    () => logs.filter((log) => log.status === "Success").length,
+    [logs],
+  );
+
+  const handleLogSearchChange = useCallback((q: string) => {
+    setSearchQuery(q);
+    setCurrentPage(1);
+  }, []);
 
   const goToNextPage = () => {
     if (currentPage < totalPages) {
@@ -290,9 +312,7 @@ export const Dashboard: React.FC = () => {
           {/* KPI Summary Bento Grid */}
           <MetricGrid
             totalRegistered="1,248"
-            presentToday={
-              logs.filter((l) => l.status === "Success").length + 958
-            }
+            presentToday={successfulLogCount + 958}
             attendanceRate="78.8%"
           />
 
@@ -320,10 +340,7 @@ export const Dashboard: React.FC = () => {
           <AttendanceLogsCard
             logs={paginatedLogs}
             searchQuery={searchQuery}
-            onSearchChange={(q) => {
-              setSearchQuery(q);
-              setCurrentPage(1);
-            }}
+            onSearchChange={handleLogSearchChange}
             isRefreshing={isRefreshing || attendanceLogsQuery.isFetching}
             onRefresh={handleRefresh}
             currentPage={currentPage}

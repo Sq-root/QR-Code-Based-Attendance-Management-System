@@ -1,6 +1,7 @@
 import axios from 'axios';
 import type { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 import { API_BASE_URL, AUTH_KEYS } from '../constants';
+import { logger } from '../lib/logger';
 
 // Create a custom Axios instance
 const api: AxiosInstance = axios.create({
@@ -22,13 +23,12 @@ api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Console logging request interceptor for development visibility
-    console.log(`[API Request Interceptor] Sending to: ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
+    logger.info(`[API Request] ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
     
     return config;
   },
   (error) => {
-    console.error('[API Request Interceptor Error]', error);
+    logger.error('[API Request Interceptor Error]', error);
     return Promise.reject(error);
   }
 );
@@ -36,12 +36,11 @@ api.interceptors.request.use(
 // Response Interceptor: Format errors, log responses, handle session expiration
 api.interceptors.response.use(
   (response: AxiosResponse) => {
-    // Console logging successful response interceptor for visibility
-    console.log(`[API Response Interceptor] Success: ${response.status} from ${response.config.url}`);
+    logger.info(`[API Response] ${response.status} ${response.config.url}`);
     return response;
   },
   (error) => {
-    console.error('[API Response Interceptor Error] Failed request details:', {
+    logger.error('[API Response Error]', {
       url: error.config?.url,
       method: error.config?.method,
       status: error.response?.status,
@@ -50,7 +49,7 @@ api.interceptors.response.use(
 
     // Example: Global status code handling (e.g., unauthorized)
     if (error.response && error.response.status === 401) {
-      console.warn('Session expired or unauthorized. Redirecting to login...');
+      logger.warn('Session expired or unauthorized. Redirecting to login...');
       // Perform redirect or log out actions if needed
     }
 

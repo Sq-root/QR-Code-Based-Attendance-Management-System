@@ -3,6 +3,7 @@ import { X, ScanLine } from "lucide-react";
 import { toast } from "sonner";
 import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
 import { SCANNER_CONFIG, APP_NAME } from "../../constants";
+import { logger } from "../../lib/logger";
 
 interface ScannerOverlayProps {
   isOpen: boolean;
@@ -71,7 +72,7 @@ const stopScanner = async (scanner: Html5Qrcode, readerId: string) => {
     try {
       await scanner.stop();
     } catch (err) {
-      console.warn("[ScannerOverlay] Failed to stop scanner", err);
+      logger.warn("[ScannerOverlay] Failed to stop scanner", err);
     }
   }
 
@@ -80,7 +81,7 @@ const stopScanner = async (scanner: Html5Qrcode, readerId: string) => {
   try {
     scanner.clear();
   } catch (err) {
-    console.warn("[ScannerOverlay] Failed to clear scanner", err);
+    logger.warn("[ScannerOverlay] Failed to clear scanner", err);
   }
 };
 

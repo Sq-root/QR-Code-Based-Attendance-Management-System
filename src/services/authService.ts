@@ -1,5 +1,6 @@
 import api from './api';
 import { API_ENDPOINTS, APP_NAME } from '../constants';
+import { logger } from '../lib/logger';
 import type { LoginCredentials, AuthResponse } from '../types';
 
 export const authService = {
@@ -14,7 +15,7 @@ export const authService = {
         username: credentials.identifier,
         password: credentials.password,
       });
-      console.log('[Auth Service] Login API success', {
+      logger.info('[Auth Service] Login API success', {
         hasToken: Boolean(response.data.token),
         hasUser: Boolean(response.data.user),
       });
@@ -31,7 +32,7 @@ export const authService = {
         },
       };
     } catch (error: unknown) {
-      console.warn('[Auth Service] Real login API failed or is not configured. Falling back to mock response for testing...', error);
+      logger.warn('[Auth Service] Real login API failed or is not configured. Falling back to mock response for testing...', error);
       
       // Simulated mock API latency
       await new Promise((resolve) => setTimeout(resolve, 1000));

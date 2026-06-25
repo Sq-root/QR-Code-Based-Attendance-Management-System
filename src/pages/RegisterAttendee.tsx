@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import AppShell from "../components/dashboard/AppShell";
 import { AUTH_KEYS, EVENT_SESSION_ID, ROUTES } from "../constants";
 import { useRegisterAttendee } from "../queries/attendanceQueries";
+import { logger } from "../lib/logger";
 import {
   emptyRegisterForm,
   registerAttendeeSchema,
@@ -49,7 +50,7 @@ export const RegisterAttendee: React.FC = () => {
 
     registerAttendeeMutation.mutate(payload, {
       onSuccess: (response) => {
-        console.log("[Register Attendee Page] Success", response);
+        logger.info("[Register Attendee Page] Success", response);
         toast.success("Attendee registered", {
           description:
             response.message || "Ticket created and sent on WhatsApp.",
@@ -58,7 +59,7 @@ export const RegisterAttendee: React.FC = () => {
         navigate(ROUTES.HOME);
       },
       onError: (error) => {
-        console.error("[Register Attendee Page] Failed", error);
+        logger.error("[Register Attendee Page] Failed", error);
         toast.error("Registration failed", {
           description:
             error.message || "Backend could not register this attendee.",

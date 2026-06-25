@@ -1,5 +1,6 @@
 import api from './api';
 import { API_ENDPOINTS } from '../constants';
+import { logger } from '../lib/logger';
 import type {
   BulkUploadJob,
   BulkUploadResponse,
@@ -39,21 +40,21 @@ const normalizeAttendees = (data: GetAttendeesResponse): Attendee[] => {
 
 export const attendanceService = {
   async issuePass(sessionId: string, data: IssuePassRequest): Promise<IssuePassResponse> {
-    console.log('[Attendance Service] Issue pass request started', {
+    logger.info('[Attendance Service] Issue pass request started', {
       sessionId,
       fullName: data.fullName,
       phoneNumber: data.phoneNumber,
     });
 
     const response = await api.post<IssuePassResponse>(API_ENDPOINTS.ISSUE_PASS(sessionId), data);
-    console.log('[Attendance Service] Issue pass request completed', response.data);
+    logger.info('[Attendance Service] Issue pass request completed', response.data);
     return response.data;
   },
 
   async checkIn(data: CheckInRequest): Promise<CheckInResponse> {
     const sessionId = data.payload.sid;
 
-    console.log('[Attendance Service] Check-in request started', {
+    logger.info('[Attendance Service] Check-in request started', {
       sessionId,
       passId: data.payload.pid,
       attendeeId: data.payload.aid,
@@ -64,12 +65,12 @@ export const attendanceService = {
     });
 
     const response = await api.post<CheckInResponse>(API_ENDPOINTS.CHECK_IN(sessionId), data);
-    console.log('[Attendance Service] Check-in request completed', response.data);
+    logger.info('[Attendance Service] Check-in request completed', response.data);
     return response.data;
   },
 
   async checkInAttendee(sessionId: string, attendeeId: string | number): Promise<CheckInResponse> {
-    console.log('[Attendance Service] Direct attendee check-in request started', {
+    logger.info('[Attendance Service] Direct attendee check-in request started', {
       sessionId,
       attendeeId,
     });
@@ -77,12 +78,12 @@ export const attendanceService = {
     const response = await api.post<CheckInResponse>(
       API_ENDPOINTS.CHECK_IN_ATTENDEE(sessionId, String(attendeeId)),
     );
-    console.log('[Attendance Service] Direct attendee check-in request completed', response.data);
+    logger.info('[Attendance Service] Direct attendee check-in request completed', response.data);
     return response.data;
   },
 
   async bulkUpload(sessionId: string, file: File): Promise<BulkUploadResponse> {
-    console.log('[Attendance Service] Bulk upload request started', {
+    logger.info('[Attendance Service] Bulk upload request started', {
       sessionId,
       fileName: file.name,
       fileSize: file.size,
@@ -102,25 +103,24 @@ export const attendanceService = {
       },
     );
 
-    console.log('[Attendance Service] Bulk upload request completed', response.data);
+    logger.info('[Attendance Service] Bulk upload request completed', response.data);
     return response.data;
   },
 
   async getBulkUploadJob(jobId: string): Promise<BulkUploadJob> {
-    console.log('[Attendance Service] Bulk upload job status request started', { jobId });
+    logger.info('[Attendance Service] Bulk upload job status request started', { jobId });
     const response = await api.get<BulkUploadJob>(API_ENDPOINTS.BULK_UPLOAD_JOB(jobId));
-    console.log('[Attendance Service] Bulk upload job status request completed', response.data);
+    logger.info('[Attendance Service] Bulk upload job status request completed', response.data);
     return response.data;
   },
 
   async getAttendees(sessionId: string, status?: string): Promise<Attendee[]> {
-    console.log('[Attendance Service] Get attendees request started', { sessionId, status });
+    logger.info('[Attendance Service] Get attendees request started', { sessionId, status });
     const response = await api.get<GetAttendeesResponse>(API_ENDPOINTS.GET_ATTENDEES(sessionId, status));
     const attendees = normalizeAttendees(response.data);
-    console.log('[Attendance Service] Get attendees request completed', {
+    logger.info('[Attendance Service] Get attendees request completed', {
       count: attendees.length,
       status,
-      rawResponse: response.data,
     });
     return attendees;
   },
@@ -129,7 +129,7 @@ export const attendanceService = {
     sessionId: string,
     data: RegisterAttendeeRequest,
   ): Promise<RegisterAttendeeResponse> {
-    console.log('[Attendance Service] Register attendee request started', {
+    logger.info('[Attendance Service] Register attendee request started', {
       sessionId,
       fullName: data.fullName,
       fatherPhone: data.fatherPhone,
@@ -141,7 +141,7 @@ export const attendanceService = {
       data,
     );
 
-    console.log('[Attendance Service] Register attendee request completed', response.data);
+    logger.info('[Attendance Service] Register attendee request completed', response.data);
     return response.data;
   },
 };

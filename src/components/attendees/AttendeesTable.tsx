@@ -14,7 +14,7 @@ interface AttendeesTableProps {
   successAttendanceAttendeeId?: string | number;
 }
 
-export const AttendeesTable: React.FC<AttendeesTableProps> = ({
+export const AttendeesTable: React.FC<AttendeesTableProps> = React.memo(({
   attendees,
   isLoading,
   onQrClick,
@@ -144,6 +144,6 @@ export const AttendeesTable: React.FC<AttendeesTableProps> = ({
       </Table>
     </div>
   );
-};
+});
 
 export default AttendeesTable;

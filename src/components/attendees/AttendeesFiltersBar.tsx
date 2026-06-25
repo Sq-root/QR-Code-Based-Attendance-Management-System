@@ -9,7 +9,7 @@ interface AttendeesFiltersBarProps {
   totalCount: number;
 }
 
-export const AttendeesFiltersBar: React.FC<AttendeesFiltersBarProps> = ({
+export const AttendeesFiltersBar: React.FC<AttendeesFiltersBarProps> = React.memo(({
   searchQuery,
   onSearchChange,
   onClearFilters,
@@ -66,6 +66,6 @@ export const AttendeesFiltersBar: React.FC<AttendeesFiltersBarProps> = ({
       )}
     </div>
   );
-};
+});
 
 export default AttendeesFiltersBar;

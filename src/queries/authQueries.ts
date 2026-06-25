@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import authService from '../services/authService';
 import { AUTH_KEYS } from '../constants';
+import { logger } from '../lib/logger';
 import type { LoginCredentials, AuthResponse, ApiError } from '../types';
 
 export const useLogin = () => {
@@ -18,10 +19,10 @@ export const useLogin = () => {
       // Invalidate existing queries to trigger reactive updates across panels
       queryClient.invalidateQueries({ queryKey: ['posts'] });
       
-      console.log(`[useLogin Mutation] Saved credentials to storage. User Role: ${data.user.role}`);
+      logger.info(`[useLogin Mutation] Saved credentials to storage. User Role: ${data.user.role}`);
     },
     onError: (error) => {
-      console.error('[useLogin Mutation Error]', error);
+      logger.error('[useLogin Mutation Error]', error);
     }
   });
 };
