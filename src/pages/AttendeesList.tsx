@@ -1,70 +1,82 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { QrCode, UserCheck, Check, Loader2 } from 'lucide-react';
 import AppShell from '../components/dashboard/AppShell';
 import AttendeesFiltersBar from '../components/attendees/AttendeesFiltersBar';
 import AttendeesTable from '../components/attendees/AttendeesTable';
 import PaginationControls from '../components/attendees/PaginationControls';
 import { EVENT_SESSION_ID, AUTH_KEYS, ROUTES } from '../constants';
-import { useAttendees } from '../queries/attendanceQueries';
-import { useIssuePass } from '../queries/attendanceQueries';
+import { useAttendees, useCheckIn, useIssuePass } from '../queries/attendanceQueries';
 import { toast } from 'sonner';
 import type { Attendee } from '../types';
+
+const getAttendeeDisplayId = (attendee: Attendee) => attendee.attendeeId ?? attendee.id;
+
+const getAttendeePhone = (attendee: Attendee) =>
+  attendee.phoneE164 || attendee.phoneNumber || attendee.fatherPhone || '';
+
+const normalizeSearchText = (value?: string | number | null) =>
+  String(value ?? '').toLowerCase();
+
+const getScannerDeviceId = () => {
+  const storageKey = 'scanner_device_id';
+  const existingId = localStorage.getItem(storageKey);
+
+  if (existingId) {
+    return existingId;
+  }
+
+  const newId = `web-${crypto.randomUUID()}`;
+  localStorage.setItem(storageKey, newId);
+  return newId;
+};
 
 const AttendeesList: React.FC = () => {
   const navigate = useNavigate();
   const hasValidSessionId =
     Boolean(EVENT_SESSION_ID) && EVENT_SESSION_ID !== 'replace-with-session-id-from-backend-logs';
 
-  // Queries and mutations
   const attendeesQuery = useAttendees(EVENT_SESSION_ID, hasValidSessionId);
   const issuePassMutation = useIssuePass(EVENT_SESSION_ID);
+  const checkInMutation = useCheckIn();
 
-  // State
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [successAttendeeId, setSuccessAttendeeId] = useState<string | number | null>(null);
+  const [loadingQrAttendeeId, setLoadingQrAttendeeId] = useState<string | number | null>(null);
+  const [successQrAttendeeId, setSuccessQrAttendeeId] = useState<string | number | null>(null);
+  const [loadingAttendanceAttendeeId, setLoadingAttendanceAttendeeId] = useState<string | number | null>(null);
+  const [successAttendanceAttendeeId, setSuccessAttendanceAttendeeId] = useState<string | number | null>(null);
   const itemsPerPage = 25;
 
-  // Filter attendees based on search query
   const filteredAttendees = useMemo(() => {
     if (!attendeesQuery.data) return [];
 
     const attendees = attendeesQuery.data;
-    if (!searchQuery.trim()) return attendees;
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return attendees;
 
-    const query = searchQuery.toLowerCase();
-    return attendees.filter(
-      (attendee) =>
-        attendee.fullName?.toLowerCase().includes(query) ||
-        attendee.phoneE164?.includes(query) ||
-        attendee.fatherName?.toLowerCase().includes(query) ||
-        attendee.motherName?.toLowerCase().includes(query) ||
-        attendee.residentialSuburb?.toLowerCase().includes(query),
-    );
+    return attendees.filter((attendee) => {
+      const searchableText = [
+        attendee.fullName,
+        attendee.youthName,
+        attendee.phoneE164,
+        attendee.phoneNumber,
+        attendee.fatherPhone,
+        attendee.residentialSuburb,
+      ]
+        .map(normalizeSearchText)
+        .join(' ');
+
+      return searchableText.includes(query);
+    });
   }, [attendeesQuery.data, searchQuery]);
 
-  // Pagination
   const totalItems = filteredAttendees.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
-
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
   const paginatedAttendees = filteredAttendees.slice(startIndex, endIndex);
 
-  // Pagination handlers
-  const goToNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage((prev) => prev + 1);
-    }
-  };
-
-  const goToPrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
-    }
-  };
-
-  // Search handlers
   const handleSearchChange = (query: string) => {
     setSearchQuery(query);
     setCurrentPage(1);
@@ -75,24 +87,33 @@ const AttendeesList: React.FC = () => {
     setCurrentPage(1);
   };
 
-  // WhatsApp handler - Issue Pass
-  const handleWhatsAppClick = (attendee: Attendee) => {
-    const phoneNumber = attendee.phoneE164 || attendee.fatherPhone;
+  const handleQrClick = (attendee: Attendee) => {
+    const phoneNumber = getAttendeePhone(attendee);
     const fullName = attendee.fullName;
+    const displayId = getAttendeeDisplayId(attendee);
+
+    if (!displayId) {
+      toast.error('Attendee ID missing', {
+        description: 'Cannot issue a QR pass without an attendee ID.',
+      });
+      return;
+    }
 
     if (!phoneNumber) {
       toast.error('No phone number available', {
-        description: 'Cannot send WhatsApp message without a phone number.',
+        description: 'Cannot issue a QR pass without a phone number.',
       });
       return;
     }
 
     if (!fullName) {
       toast.error('No name available', {
-        description: 'Cannot send WhatsApp message without attendee name.',
+        description: 'Cannot issue a QR pass without attendee name.',
       });
       return;
     }
+
+    setLoadingQrAttendeeId(displayId);
 
     issuePassMutation.mutate(
       {
@@ -101,30 +122,82 @@ const AttendeesList: React.FC = () => {
       },
       {
         onSuccess: (response) => {
-          const displayId = (attendee.attendeeId ?? attendee.id) as string | number;
-          setSuccessAttendeeId(displayId);
-
-          toast.success('✓ Pass Issued & Dispatched', {
-            description: `QR pass sent to ${fullName} via WhatsApp on ${phoneNumber}`,
+          setSuccessQrAttendeeId(displayId);
+          toast.success('QR pass issued', {
+            description: response.message || `QR pass created for ${fullName}.`,
             duration: 4000,
           });
-
-          setTimeout(() => setSuccessAttendeeId(null), 3000);
+          setTimeout(() => setSuccessQrAttendeeId(null), 3000);
           console.log('[AttendeesList] Issue pass success:', response);
         },
         onError: (error) => {
           console.error('[AttendeesList] Issue pass failed:', error);
-          toast.error('✗ Failed to Issue Pass', {
+          toast.error('Failed to issue QR pass', {
             description:
-              error.message || 'Unable to dispatch QR pass. Please check the phone number and try again.',
+              error.message || 'Unable to issue QR pass. Please check the phone number and try again.',
             duration: 5000,
           });
+        },
+        onSettled: () => {
+          setLoadingQrAttendeeId(null);
         },
       },
     );
   };
 
-  // Logout handler
+  const handleAttendanceClick = (attendee: Attendee) => {
+    const ticket = attendee.qrToken;
+    const displayId = getAttendeeDisplayId(attendee);
+
+    if (!displayId) {
+      toast.error('Attendee ID missing', {
+        description: 'Cannot mark attendance without an attendee ID.',
+      });
+      return;
+    }
+
+    if (!ticket?.payload || !ticket.signature) {
+      toast.error('QR token missing', {
+        description: 'Cannot mark attendance because this attendee has no QR token.',
+      });
+      return;
+    }
+
+    setLoadingAttendanceAttendeeId(displayId);
+
+    checkInMutation.mutate(
+      {
+        payload: ticket.payload,
+        signature: ticket.signature,
+        scannerDeviceId: getScannerDeviceId(),
+        deviceScanId: crypto.randomUUID(),
+        source: 'attendees_list',
+      },
+      {
+        onSuccess: (response) => {
+          setSuccessAttendanceAttendeeId(displayId);
+          toast.success('Attendance marked', {
+            description: response.message || `${response.attendeeName || attendee.fullName} marked present.`,
+            duration: 4000,
+          });
+          attendeesQuery.refetch();
+          setTimeout(() => setSuccessAttendanceAttendeeId(null), 3000);
+          console.log('[AttendeesList] Attendance success:', response);
+        },
+        onError: (error) => {
+          console.error('[AttendeesList] Attendance failed:', error);
+          toast.error('Failed to mark attendance', {
+            description: error.message || 'Backend rejected this QR ticket.',
+            duration: 5000,
+          });
+        },
+        onSettled: () => {
+          setLoadingAttendanceAttendeeId(null);
+        },
+      },
+    );
+  };
+
   const handleLogout = () => {
     localStorage.removeItem(AUTH_KEYS.TOKEN);
     localStorage.removeItem(AUTH_KEYS.ROLE);
@@ -134,102 +207,139 @@ const AttendeesList: React.FC = () => {
 
   return (
     <AppShell onLogout={handleLogout}>
-        {/* Page Content */}
-        <main className="flex-1 px-margin-mobile md:px-8 py-6 w-full max-w-[1600px] mx-auto space-y-6 animate-fade-in">
-          {/* Filters */}
-          <AttendeesFiltersBar
-            searchQuery={searchQuery}
-            onSearchChange={handleSearchChange}
-            onClearFilters={handleClearFilters}
-            totalCount={attendeesQuery.data?.length || 0}
-          />
+      <main className="flex-1 px-margin-mobile md:px-8 py-6 w-full max-w-[1600px] mx-auto space-y-6 animate-fade-in">
+        <AttendeesFiltersBar
+          searchQuery={searchQuery}
+          onSearchChange={handleSearchChange}
+          onClearFilters={handleClearFilters}
+          totalCount={attendeesQuery.data?.length || 0}
+        />
 
-          {/* Table with Cards Wrapper */}
-          <div className="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden">
-            {/* Desktop Table */}
-            <div className="hidden sm:block">
-              <AttendeesTable
-                attendees={paginatedAttendees}
-                isLoading={attendeesQuery.isLoading}
-                onWhatsAppClick={handleWhatsAppClick}
-                successAttendeeId={successAttendeeId ?? undefined}
-              />
-            </div>
+        <div className="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden">
+          <div className="hidden sm:block">
+            <AttendeesTable
+              attendees={paginatedAttendees}
+              isLoading={attendeesQuery.isLoading}
+              onQrClick={handleQrClick}
+              onAttendanceClick={handleAttendanceClick}
+              loadingQrAttendeeId={loadingQrAttendeeId ?? undefined}
+              successQrAttendeeId={successQrAttendeeId ?? undefined}
+              loadingAttendanceAttendeeId={loadingAttendanceAttendeeId ?? undefined}
+              successAttendanceAttendeeId={successAttendanceAttendeeId ?? undefined}
+            />
+          </div>
 
-            {/* Mobile Card View */}
-            <div className="sm:hidden divide-y divide-outline-variant/50">
-              {attendeesQuery.isLoading ? (
-                <div className="flex items-center justify-center py-12">
-                  <div className="text-on-surface-variant text-body-sm">Loading...</div>
-                </div>
-              ) : paginatedAttendees.length === 0 ? (
-                <div className="text-center py-12 text-on-surface-variant text-body-sm">
-                  No attendees found.
-                </div>
-              ) : (
-                paginatedAttendees.map((attendee, index) => (
+          <div className="sm:hidden space-y-2">
+            {attendeesQuery.isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-on-surface-variant text-body-sm">Loading...</div>
+              </div>
+            ) : paginatedAttendees.length === 0 ? (
+              <div className="text-center py-12 text-on-surface-variant text-body-sm">
+                No attendees found.
+              </div>
+            ) : (
+              paginatedAttendees.map((attendee, index) => {
+                const displayId = getAttendeeDisplayId(attendee);
+                const isQrLoading = loadingQrAttendeeId === displayId;
+                const isQrSuccess = successQrAttendeeId === displayId;
+                const isAttendanceLoading = loadingAttendanceAttendeeId === displayId;
+                const isAttendanceSuccess = successAttendanceAttendeeId === displayId;
+
+                return (
                   <div
                     key={
                       attendee.pass?.passId ??
-                      [
-                        attendee.attendeeId ?? attendee.id,
-                        attendee.pass?.eventSessionId,
-                        index,
-                      ]
-                        .filter(Boolean)
-                        .join('-')
+                      [displayId, attendee.pass?.eventSessionId, index].filter(Boolean).join('-')
                     }
-                    className="p-4 space-y-3"
+                    className="bg-white rounded-xl border border-gray-200 px-4 py-3 shadow-sm hover:shadow-md transition-shadow"
                   >
-                    <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-3">
                       <div>
-                        <p className="font-semibold text-on-surface text-body-sm">
-                          {attendee.fullName}
-                        </p>
-                        <p className="text-on-surface-variant font-mono text-body-xs">
-                          {attendee.phoneE164 || attendee.fatherPhone || '-'}
-                        </p>
+                        <div className="mb-2">
+                          <p className="font-bold text-gray-900 text-sm">
+                            {attendee.fullName || '-'}
+                          </p>
+                          <p className="text-gray-500 text-xs font-mono mt-0.5">
+                            {getAttendeePhone(attendee) || '-'}
+                          </p>
+                        </div>
+
+                        <div className="space-y-1.5 pt-2 border-t border-gray-100">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="text-gray-600 font-semibold">Child Name</span>
+                            <span className="text-gray-900 font-medium text-right">
+                              {attendee.youthName || '-'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="text-gray-600 font-semibold">Area</span>
+                            <span className="text-gray-900 font-medium text-right">
+                              {attendee.residentialSuburb || '-'}
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <button
-                        onClick={() => handleWhatsAppClick(attendee)}
-                        disabled={issuePassMutation.isPending}
-                        className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-100 hover:bg-green-200 text-green-700 font-medium text-label-xs transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0"
-                      >
-                        WhatsApp
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3 text-body-xs">
-                      <div>
-                        <p className="text-on-surface-variant font-medium mb-0.5">Father</p>
-                        <p className="text-on-surface">{attendee.fatherName || '-'}</p>
-                      </div>
-                      <div>
-                        <p className="text-on-surface-variant font-medium mb-0.5">Mother</p>
-                        <p className="text-on-surface">{attendee.motherName || '-'}</p>
-                      </div>
-                      <div className="col-span-2">
-                        <p className="text-on-surface-variant font-medium mb-0.5">Area</p>
-                        <p className="text-on-surface">{attendee.residentialSuburb || '-'}</p>
+
+                      <div className="flex gap-2 pt-1">
+                        <button
+                          onClick={() => handleQrClick(attendee)}
+                          disabled={isQrLoading || isAttendanceLoading}
+                          className={`flex-1 inline-flex items-center justify-center gap-1.5 px-2 py-2 rounded-md text-xs font-medium transition-all duration-200 cursor-pointer ${
+                            isQrSuccess
+                              ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                              : 'bg-blue-500 text-white hover:bg-blue-600'
+                          } disabled:opacity-50 disabled:cursor-not-allowed active:scale-95`}
+                          title={isQrSuccess ? 'QR pass issued' : 'Issue QR pass'}
+                        >
+                          {isQrLoading ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : isQrSuccess ? (
+                            <Check className="w-3.5 h-3.5" />
+                          ) : (
+                            <QrCode className="w-3.5 h-3.5" />
+                          )}
+                          <span>{isQrLoading ? 'Issuing...' : isQrSuccess ? 'Issued' : 'QR'}</span>
+                        </button>
+                        <button
+                          onClick={() => handleAttendanceClick(attendee)}
+                          disabled={isQrLoading || isAttendanceLoading}
+                          className={`flex-1 inline-flex items-center justify-center gap-1.5 px-2 py-2 rounded-md text-xs font-medium transition-all duration-200 cursor-pointer ${
+                            isAttendanceSuccess
+                              ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                              : 'bg-teal-500 text-white hover:bg-teal-600'
+                          } disabled:opacity-50 disabled:cursor-not-allowed active:scale-95`}
+                          title={isAttendanceSuccess ? 'Attendance marked' : 'Mark attendance'}
+                        >
+                          {isAttendanceLoading ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : isAttendanceSuccess ? (
+                            <Check className="w-3.5 h-3.5" />
+                          ) : (
+                            <UserCheck className="w-3.5 h-3.5" />
+                          )}
+                          <span>{isAttendanceLoading ? 'Marking...' : isAttendanceSuccess ? 'Done' : 'Attend'}</span>
+                        </button>
                       </div>
                     </div>
                   </div>
-                ))
-              )}
-            </div>
-
-            {/* Pagination */}
-            {totalItems > 0 && (
-              <PaginationControls
-                currentPage={currentPage}
-                totalPages={totalPages}
-                totalItems={totalItems}
-                itemsPerPage={itemsPerPage}
-                onPrevPage={goToPrevPage}
-                onNextPage={goToNextPage}
-              />
+                );
+              })
             )}
           </div>
-        </main>
+
+          {totalItems > 0 && (
+            <PaginationControls
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              itemsPerPage={itemsPerPage}
+              onPrevPage={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+              onNextPage={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+            />
+          )}
+        </div>
+      </main>
     </AppShell>
   );
 };

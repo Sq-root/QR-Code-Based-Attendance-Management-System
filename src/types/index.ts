@@ -109,6 +109,9 @@ export interface Attendee {
   residentialSuburb?: string;
   whoWillAttend?: string;
   referenceName?: string;
+  attendeeRole?: string;
+  linkedYouthId?: string;
+  youthName?: string;
   deliveryStatus?: string;
   attendanceStatus?: string;
   createdAt?: string;
@@ -142,6 +145,7 @@ export interface AttendeeWithPass {
   attendee: Attendee;
   qrToken?: QrToken;
   pass?: AttendancePass;
+  youthName?: string;
 }
 
 export type AttendeeResponseItem = Attendee | AttendeeWithPass;

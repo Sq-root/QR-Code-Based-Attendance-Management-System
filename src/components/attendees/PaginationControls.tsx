@@ -23,41 +23,43 @@ export const PaginationControls: React.FC<PaginationControlsProps> = ({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <div className="flex items-center justify-between gap-4 px-4 py-4 border-t border-outline-variant bg-surface-container-lowest rounded-b-lg">
-      <div className="text-body-sm text-on-surface-variant font-sans">
-        Showing <span className="font-semibold text-on-surface">{startItem}</span> to{' '}
-        <span className="font-semibold text-on-surface">{endItem}</span> of{' '}
-        <span className="font-semibold text-on-surface">{totalItems}</span> attendees
-      </div>
-
-      <div className="flex items-center gap-2">
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={onPrevPage}
-          disabled={currentPage === 1}
-          className="gap-1.5"
-        >
-          <ChevronLeft className="w-4 h-4" />
-          <span className="hidden sm:inline">Previous</span>
-        </Button>
-
-        <div className="px-3 py-1.5 bg-surface-container-low rounded-lg border border-outline-variant">
-          <span className="text-body-sm font-semibold text-on-surface">
-            {currentPage} / {totalPages}
-          </span>
+    <div className="border-t border-gray-200 bg-white">
+      <div className="px-4 py-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="text-sm text-gray-600 font-sans">
+          Showing <span className="font-semibold text-gray-900">{startItem}</span> to{' '}
+          <span className="font-semibold text-gray-900">{endItem}</span> of{' '}
+          <span className="font-semibold text-gray-900">{totalItems}</span> attendees
         </div>
 
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={onNextPage}
-          disabled={currentPage === totalPages}
-          className="gap-1.5"
-        >
-          <span className="hidden sm:inline">Next</span>
-          <ChevronRight className="w-4 h-4" />
-        </Button>
+        <div className="flex items-center justify-center gap-2">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={onPrevPage}
+            disabled={currentPage === 1}
+            className="gap-1.5 h-9 px-3 cursor-pointer hover:bg-gray-200 transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            <span className="hidden sm:inline text-xs">Previous</span>
+          </Button>
+
+          <div className="px-4 py-2 bg-gray-100 rounded-lg border border-gray-300 min-w-max">
+            <span className="text-sm font-semibold text-gray-900">
+              {currentPage} of {totalPages}
+            </span>
+          </div>
+
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={onNextPage}
+            disabled={currentPage === totalPages}
+            className="gap-1.5 h-9 px-3 cursor-pointer hover:bg-gray-200 transition-colors"
+          >
+            <span className="hidden sm:inline text-xs">Next</span>
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );
