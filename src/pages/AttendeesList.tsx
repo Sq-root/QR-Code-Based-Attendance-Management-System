@@ -193,7 +193,7 @@ const AttendeesList: React.FC = () => {
           totalCount={attendeesQuery.data?.length || 0}
         />
 
-        <div className="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden">
+        <div className="sm:bg-surface-container-lowest sm:border sm:border-outline-variant sm:rounded-lg sm:overflow-hidden">
           <div className="hidden sm:block">
             <AttendeesTable
               attendees={paginatedAttendees}
