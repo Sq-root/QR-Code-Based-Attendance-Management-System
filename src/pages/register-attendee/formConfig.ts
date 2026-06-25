@@ -15,6 +15,11 @@ export const emptyRegisterForm: RegisterAttendeeRequest = {
   referenceName: "",
 };
 
+export const genderOptions = [
+  "Male",
+  "Female",
+];
+
 export const standardOptions = [
   "Pre school",
   "Pre primary",

@@ -3,6 +3,7 @@ import type { FieldErrors, UseFormRegister } from "react-hook-form";
 import { Send } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
+  genderOptions,
   residentialSuburbOptions,
   standardOptions,
   whoWillAttendOptions,
@@ -39,10 +40,11 @@ export const RegisterAttendeeForm: React.FC<RegisterAttendeeFormProps> = ({
         required
         error={errors.fullName?.message}
       />
-      <RegisteredTextField
+      <RegisteredSelectField
         label="Gender"
         registration={register("gender")}
-        placeholder="Male"
+        placeholder="Select gender"
+        options={genderOptions}
         disabled={disabled}
         required
         error={errors.gender?.message}

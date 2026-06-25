@@ -349,6 +349,7 @@ export const Dashboard: React.FC = () => {
       <ScannerOverlay
         isOpen={scannerOpen}
         onClose={() => setScannerOpen(false)}
+        onManualEntry={() => navigate(ROUTES.ATTENDEES_LIST)}
         isScanning={scannerScanning}
         successName={scannerSuccessName}
         onScanSuccess={handleScanSuccess}

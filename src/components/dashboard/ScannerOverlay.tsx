@@ -7,6 +7,7 @@ import { SCANNER_CONFIG, APP_NAME } from "../../constants";
 interface ScannerOverlayProps {
   isOpen: boolean;
   onClose: () => void;
+  onManualEntry?: () => void;
   isScanning: boolean;
   successName: string;
   onScanSuccess: (decodedText: string) => void;
@@ -86,6 +87,7 @@ const stopScanner = async (scanner: Html5Qrcode, readerId: string) => {
 export const ScannerOverlay: React.FC<ScannerOverlayProps> = ({
   isOpen,
   onClose,
+  onManualEntry,
   isScanning,
   successName,
   onScanSuccess,
@@ -222,7 +224,10 @@ export const ScannerOverlay: React.FC<ScannerOverlayProps> = ({
       {/* Bottom */}
       <div className="absolute bottom-0 w-full bg-gradient-to-t from-black/95 to-transparent pt-16 pb-8 px-6 flex flex-col items-center gap-6 z-20">
         <button
-          onClick={() => { onClose(); toast.info("Switched to manual verification mode."); }}
+          onClick={() => {
+            onClose();
+            onManualEntry?.();
+          }}
           className="text-secondary-fixed-dim hover:text-secondary-fixed underline underline-offset-4 text-body-sm font-semibold transition-colors cursor-pointer"
         >
           Manual Entry
