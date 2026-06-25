@@ -112,6 +112,7 @@ export interface Attendee {
   attendeeRole?: string;
   linkedYouthId?: string;
   youthName?: string;
+  hasCheckedIn?: boolean;
   deliveryStatus?: string;
   attendanceStatus?: string;
   createdAt?: string;
@@ -146,6 +147,7 @@ export interface AttendeeWithPass {
   qrToken?: QrToken;
   pass?: AttendancePass;
   youthName?: string;
+  hasCheckedIn?: boolean;
 }
 
 export type AttendeeResponseItem = Attendee | AttendeeWithPass;

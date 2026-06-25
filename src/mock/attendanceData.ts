@@ -16,11 +16,14 @@ export interface DashboardMetric {
 export interface ActivityLog {
   id: string;
   name: string;
+  phone?: string;
+  childName?: string;
+  area?: string;
   initials: string;
   avatarBg: string;
   session: string;
   time: string;
-  status: 'Success' | 'Late';
+  status: 'Present' | 'Success' | 'Late';
 }
 
 export const mockMetrics: DashboardMetric[] = [

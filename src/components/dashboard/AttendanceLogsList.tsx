@@ -21,17 +21,15 @@ export const AttendanceLogsList: React.FC<AttendanceLogsListProps> = ({ logs }) 
               </div>
               <div className="flex-1 min-w-0">
                 <h4 className="font-semibold text-on-surface text-body-sm truncate">{log.name}</h4>
-                <p className="text-body-sm text-on-surface-variant truncate">{log.session}</p>
               </div>
-              <div className="flex flex-col items-end gap-1 flex-shrink-0">
+              <div className="flex-shrink-0">
                 <span className={`px-2 py-0.5 rounded-full font-sans text-[10px] font-bold uppercase tracking-wider ${
-                  log.status === 'Success'
+                  log.status === 'Present' || log.status === 'Success'
                     ? 'bg-tertiary-fixed/20 text-on-tertiary-container'
                     : 'bg-error-container text-on-error-container'
                 }`}>
                   {log.status}
                 </span>
-                <span className="text-[10px] text-on-surface-variant font-mono">{log.time}</span>
               </div>
             </li>
           ))

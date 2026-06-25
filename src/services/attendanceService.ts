@@ -22,6 +22,7 @@ const normalizeAttendee = (item: AttendeeResponseItem): Attendee => {
       qrToken: item.qrToken,
       pass: item.pass,
       youthName: item.youthName ?? item.attendee.youthName,
+      hasCheckedIn: item.hasCheckedIn ?? item.attendee.hasCheckedIn,
       deliveryStatus: item.attendee.deliveryStatus ?? item.pass?.deliveryStatus ?? undefined,
     };
   }

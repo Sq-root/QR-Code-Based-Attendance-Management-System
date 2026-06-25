@@ -40,6 +40,13 @@ const formatTime = (value?: string) => {
 
 const attendeeToLog = (attendee: Attendee, index: number): ActivityLog => {
   const name = attendee.fullName || "Unknown Attendee";
+  const childName =
+    attendee.youthName || (attendee.attendeeRole === "YOUTH" ? attendee.fullName : undefined);
+  const status = attendee.hasCheckedIn
+    ? "Present"
+    : attendee.attendanceStatus?.toLowerCase() === "late"
+      ? "Late"
+      : "Success";
 
   return {
     id: String(
@@ -49,11 +56,14 @@ const attendeeToLog = (attendee: Attendee, index: number): ActivityLog => {
           .join("-"),
     ),
     name,
+    phone: attendee.phoneE164 || attendee.phoneNumber || attendee.fatherPhone,
+    childName,
+    area: attendee.residentialSuburb,
     initials: getInitials(name),
     avatarBg: "bg-primary-fixed text-on-primary-fixed",
     session: attendee.standard || attendee.residentialSuburb || "Registered attendee",
     time: formatTime(attendee.createdAt),
-    status: attendee.attendanceStatus?.toLowerCase() === "late" ? "Late" : "Success",
+    status,
   };
 };
 
@@ -204,7 +214,7 @@ export const Dashboard: React.FC = () => {
               hour: "2-digit",
               minute: "2-digit",
             }),
-            status: "Success",
+            status: "Present",
           };
 
           setScanLogs((prev) => [newLog, ...prev]);
@@ -253,7 +263,7 @@ export const Dashboard: React.FC = () => {
   );
 
   const successfulLogCount = useMemo(
-    () => logs.filter((log) => log.status === "Success").length,
+    () => logs.filter((log) => log.status === "Present" || log.status === "Success").length,
     [logs],
   );
 

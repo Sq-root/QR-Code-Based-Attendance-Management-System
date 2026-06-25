@@ -12,16 +12,17 @@ export const AttendanceLogsTable: React.FC<AttendanceLogsTableProps> = ({ logs }
       <Table>
         <TableHeader className="sticky top-0 bg-surface-container-lowest z-10 shadow-[0_1px_0_0_rgba(0,0,0,0.05)]">
           <TableRow className="bg-surface-container-low/50 hover:bg-surface-container-low/50 border-b border-outline-variant">
-            <TableHead className="!py-2.5 !px-6 bg-surface-container-lowest">Attendee Name</TableHead>
-            <TableHead className="!py-2.5 !px-6 bg-surface-container-lowest">Event/Session</TableHead>
-            <TableHead className="!py-2.5 !px-6 bg-surface-container-lowest">Time</TableHead>
+            <TableHead className="!py-2.5 !px-6 bg-surface-container-lowest">Name</TableHead>
+            <TableHead className="!py-2.5 !px-6 bg-surface-container-lowest">Phone</TableHead>
+            <TableHead className="!py-2.5 !px-6 bg-surface-container-lowest">Child Name</TableHead>
+            <TableHead className="!py-2.5 !px-6 bg-surface-container-lowest">Area</TableHead>
             <TableHead className="!py-2.5 !px-6 bg-surface-container-lowest text-right">Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {logs.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={4} className="text-center py-12 text-on-surface-variant font-sans text-body-sm">
+              <TableCell colSpan={5} className="text-center py-12 text-on-surface-variant font-sans text-body-sm">
                 No matching records found.
               </TableCell>
             </TableRow>
@@ -38,11 +39,18 @@ export const AttendanceLogsTable: React.FC<AttendanceLogsTableProps> = ({ logs }
                     </span>
                   </div>
                 </TableCell>
-                <TableCell className="!py-2 !px-6 text-on-surface-variant text-body-sm">{log.session}</TableCell>
-                <TableCell className="!py-2 !px-6 font-mono text-body-sm text-on-surface-variant">{log.time}</TableCell>
+                <TableCell className="!py-2 !px-6 font-mono text-body-sm text-on-surface-variant">
+                  {log.phone || '-'}
+                </TableCell>
+                <TableCell className="!py-2 !px-6 text-on-surface-variant text-body-sm">
+                  {log.childName || '-'}
+                </TableCell>
+                <TableCell className="!py-2 !px-6 text-on-surface-variant text-body-sm">
+                  {log.area || '-'}
+                </TableCell>
                 <TableCell className="!py-2 !px-6 text-right">
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full font-sans text-[10px] font-bold uppercase tracking-wider ${
-                    log.status === 'Success'
+                    log.status === 'Present' || log.status === 'Success'
                       ? 'bg-tertiary-fixed/20 text-on-tertiary-container border border-on-tertiary-container/15'
                       : 'bg-error-container text-on-error-container border border-error/20'
                   }`}>
