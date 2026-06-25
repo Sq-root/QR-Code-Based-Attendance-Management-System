@@ -22,6 +22,37 @@ const emptyRegisterForm: RegisterAttendeeRequest = {
   referenceName: "",
 };
 
+const standardOptions = [
+  "Pre school",
+  "Pre primary",
+  "1st to 4th",
+  "5th to 8th",
+  "9th to 10th",
+];
+
+const residentialSuburbOptions = [
+  "Virar",
+  "Nalasopara",
+  "Vasai",
+  "Mira-bhayander",
+  "Dahisar",
+  "Borivali",
+  "Kandivali",
+  "Malad",
+  "Goregoan",
+  "Andheri",
+  "VileParle",
+  "Santacruz",
+  "South Mumbai",
+];
+
+const whoWillAttendOptions = [
+  "Both Parent Coming",
+  "Only Mother Coming",
+  "Only Father Coming",
+  "Guardian Coming",
+];
+
 export const RegisterAttendee: React.FC = () => {
   const navigate = useNavigate();
   const registerAttendeeMutation = useRegisterAttendee(EVENT_SESSION_ID);
@@ -109,13 +140,13 @@ export const RegisterAttendee: React.FC = () => {
               <Field label="Child full name" value={form.fullName} onChange={(value) => updateField("fullName", value)} placeholder="John Doe" disabled={registerAttendeeMutation.isPending} required />
               <Field label="Gender" value={form.gender} onChange={(value) => updateField("gender", value)} placeholder="Male" disabled={registerAttendeeMutation.isPending} />
               <Field label="Age" value={form.age} onChange={(value) => updateField("age", value)} placeholder="13" disabled={registerAttendeeMutation.isPending} />
-              <Field label="Standard" value={form.standard} onChange={(value) => updateField("standard", value)} placeholder="5th to 8th" disabled={registerAttendeeMutation.isPending} />
+              <SelectField label="Standard" value={form.standard} onChange={(value) => updateField("standard", value)} placeholder="Select standard" options={standardOptions} disabled={registerAttendeeMutation.isPending} />
               <Field label="Father full name" value={form.fatherName} onChange={(value) => updateField("fatherName", value)} placeholder="Peter Doe" disabled={registerAttendeeMutation.isPending} />
               <Field label="Father WhatsApp" value={form.fatherPhone} onChange={(value) => updateField("fatherPhone", value)} placeholder="9324409127" disabled={registerAttendeeMutation.isPending} required />
               <Field label="Mother full name" value={form.motherName} onChange={(value) => updateField("motherName", value)} placeholder="Mary Doe" disabled={registerAttendeeMutation.isPending} />
               <Field label="Mother WhatsApp" value={form.motherPhone} onChange={(value) => updateField("motherPhone", value)} placeholder="8591091651" disabled={registerAttendeeMutation.isPending} />
-              <Field label="Residential suburb" value={form.residentialSuburb} onChange={(value) => updateField("residentialSuburb", value)} placeholder="Kandivali" disabled={registerAttendeeMutation.isPending} />
-              <Field label="Who will attend" value={form.whoWillAttend} onChange={(value) => updateField("whoWillAttend", value)} placeholder="Both Parents Coming" disabled={registerAttendeeMutation.isPending} />
+              <SelectField label="Residential suburb" value={form.residentialSuburb} onChange={(value) => updateField("residentialSuburb", value)} placeholder="Select residential suburb" options={residentialSuburbOptions} disabled={registerAttendeeMutation.isPending} />
+              <SelectField label="Who will attend" value={form.whoWillAttend} onChange={(value) => updateField("whoWillAttend", value)} placeholder="Select attendee" options={whoWillAttendOptions} disabled={registerAttendeeMutation.isPending} />
               <Field label="Reference name" value={form.referenceName} onChange={(value) => updateField("referenceName", value)} placeholder="Optional" disabled={registerAttendeeMutation.isPending} className="md:col-span-2" />
             </div>
 
@@ -150,6 +181,10 @@ interface FieldProps {
   className?: string;
 }
 
+interface SelectFieldProps extends FieldProps {
+  options: string[];
+}
+
 const Field: React.FC<FieldProps> = ({
   label,
   value,
@@ -171,6 +206,37 @@ const Field: React.FC<FieldProps> = ({
       className="w-full h-11 rounded-lg border border-outline-variant bg-surface-container-lowest px-3 text-body-sm outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/15 disabled:opacity-60"
       placeholder={placeholder}
     />
+  </div>
+);
+
+const SelectField: React.FC<SelectFieldProps> = ({
+  label,
+  value,
+  onChange,
+  placeholder,
+  options,
+  disabled,
+  required = false,
+  className = "",
+}) => (
+  <div className={`space-y-1.5 ${className}`}>
+    <label className="text-label-md font-semibold text-on-surface">
+      {label}
+      {required && <span className="text-error ml-1">*</span>}
+    </label>
+    <select
+      value={value}
+      onChange={(event) => onChange(event.target.value)}
+      disabled={disabled}
+      className="w-full h-11 rounded-lg border border-outline-variant bg-surface-container-lowest px-3 text-body-sm outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/15 disabled:opacity-60"
+    >
+      <option value="">{placeholder}</option>
+      {options.map((option) => (
+        <option key={option} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
   </div>
 );
 
