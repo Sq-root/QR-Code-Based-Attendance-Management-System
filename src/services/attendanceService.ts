@@ -113,12 +113,13 @@ export const attendanceService = {
     return response.data;
   },
 
-  async getAttendees(sessionId: string): Promise<Attendee[]> {
-    console.log('[Attendance Service] Get attendees request started', { sessionId });
-    const response = await api.get<GetAttendeesResponse>(API_ENDPOINTS.GET_ATTENDEES(sessionId));
+  async getAttendees(sessionId: string, status?: string): Promise<Attendee[]> {
+    console.log('[Attendance Service] Get attendees request started', { sessionId, status });
+    const response = await api.get<GetAttendeesResponse>(API_ENDPOINTS.GET_ATTENDEES(sessionId, status));
     const attendees = normalizeAttendees(response.data);
     console.log('[Attendance Service] Get attendees request completed', {
       count: attendees.length,
+      status,
       rawResponse: response.data,
     });
     return attendees;

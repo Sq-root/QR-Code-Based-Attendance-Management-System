@@ -54,11 +54,12 @@ export const useBulkUploadJob = (jobId: string, enabled = true) => {
   });
 };
 
-export const useAttendees = (sessionId: string, enabled = true) => {
+export const useAttendees = (sessionId: string, enabled = true, status?: string) => {
   return useQuery<Attendee[], ApiError>({
-    queryKey: attendanceQueryKeys.attendees(sessionId),
-    queryFn: () => attendanceService.getAttendees(sessionId),
+    queryKey: status ? ['attendees', sessionId, status] : attendanceQueryKeys.attendees(sessionId),
+    queryFn: () => attendanceService.getAttendees(sessionId, status),
     enabled: enabled && Boolean(sessionId),
+    refetchInterval: status === 'PRESENT' ? 5000 : undefined,
   });
 };
 

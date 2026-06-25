@@ -227,7 +227,7 @@ const AttendeesList: React.FC = () => {
                   >
                     <div className="space-y-3">
                       <div>
-                        <div className="mb-2">
+                        <div className="mb-3">
                           <p className="font-bold text-gray-900 text-sm">
                             {attendee.fullName || '-'}
                           </p>
@@ -236,13 +236,29 @@ const AttendeesList: React.FC = () => {
                           </p>
                         </div>
 
-                        <div className="space-y-1.5 pt-2 border-t border-gray-100">
-                          <div className="flex justify-between items-center text-xs">
-                            <span className="text-gray-600 font-semibold">Child Name</span>
-                            <span className="text-gray-900 font-medium text-right">
-                              {attendee.youthName || '-'}
-                            </span>
+                        <div className="space-y-2 pt-3 border-t border-gray-100">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-gray-600 font-semibold text-xs">Child</span>
+                            {attendee.youthName ? (
+                              <span className="bg-blue-100 text-blue-800 px-2.5 py-1 rounded-md font-semibold text-xs">
+                                {attendee.youthName}
+                              </span>
+                            ) : (
+                              <span className="text-gray-400 text-xs">-</span>
+                            )}
                           </div>
+                          {attendee.age && (
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="text-gray-600 font-semibold">Age</span>
+                              <span className="text-gray-900 font-medium">{attendee.age}</span>
+                            </div>
+                          )}
+                          {attendee.standard && (
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="text-gray-600 font-semibold">Standard</span>
+                              <span className="text-gray-900 font-medium">{attendee.standard}</span>
+                            </div>
+                          )}
                           <div className="flex justify-between items-center text-xs">
                             <span className="text-gray-600 font-semibold">Area</span>
                             <span className="text-gray-900 font-medium text-right">

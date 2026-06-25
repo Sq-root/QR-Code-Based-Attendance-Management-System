@@ -61,7 +61,7 @@ export const Dashboard: React.FC = () => {
   const hasValidSessionId =
     Boolean(EVENT_SESSION_ID) && EVENT_SESSION_ID !== "replace-with-session-id-from-backend-logs";
   const checkInMutation = useCheckIn();
-  const attendeesQuery = useAttendees(EVENT_SESSION_ID, hasValidSessionId);
+  const attendanceLogsQuery = useAttendees(EVENT_SESSION_ID, hasValidSessionId, 'PRESENT');
 
   // Extra logs from scans are kept locally until backend exposes attendance-record list.
   const [scanLogs, setScanLogs] = useState<ActivityLog[]>([]);
@@ -80,8 +80,8 @@ export const Dashboard: React.FC = () => {
   const [scannerSuccessName, setScannerSuccessName] = useState("");
 
   const attendeeLogs = useMemo(
-    () => (attendeesQuery.data ?? []).map(attendeeToLog),
-    [attendeesQuery.data],
+    () => (attendanceLogsQuery.data ?? []).map(attendeeToLog),
+    [attendanceLogsQuery.data],
   );
   const logs = useMemo(() => [...scanLogs, ...attendeeLogs], [scanLogs, attendeeLogs]);
 
@@ -94,7 +94,7 @@ export const Dashboard: React.FC = () => {
 
   const handleRefresh = () => {
     setIsRefreshing(true);
-    toast.promise(attendeesQuery.refetch().finally(() => setIsRefreshing(false)), {
+    toast.promise(attendanceLogsQuery.refetch().finally(() => setIsRefreshing(false)), {
       loading: "Refreshing attendance records...",
       success: () => {
         setSearchQuery("");
@@ -324,7 +324,7 @@ export const Dashboard: React.FC = () => {
               setSearchQuery(q);
               setCurrentPage(1);
             }}
-            isRefreshing={isRefreshing || attendeesQuery.isFetching}
+            isRefreshing={isRefreshing || attendanceLogsQuery.isFetching}
             onRefresh={handleRefresh}
             currentPage={currentPage}
             totalPages={totalPages}

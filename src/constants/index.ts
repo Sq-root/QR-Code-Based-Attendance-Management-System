@@ -24,7 +24,7 @@ export const API_ENDPOINTS = {
   CHECK_IN_ATTENDEE: (sessionId: string, attendeeId: string) => `/event-sessions/${sessionId}/attendees/${attendeeId}/check-in`,
   BULK_UPLOAD: (sessionId: string) => `/event-sessions/${sessionId}/bulk-upload`,
   BULK_UPLOAD_JOB: (jobId: string) => `/bulk-upload/jobs/${jobId}`,
-  GET_ATTENDEES: (sessionId: string) => `/event-sessions/${sessionId}/attendees`,
+  GET_ATTENDEES: (sessionId: string, status?: string) => `/event-sessions/${sessionId}/attendees${status ? `?status=${status}` : ''}`,
   REGISTER_ATTENDEE: (sessionId: string) => `/event-sessions/${sessionId}/attendees`,
 } as const;
 
