@@ -29,9 +29,9 @@ export const AttendanceLogsTable: React.FC<AttendanceLogsTableProps> = ({ logs }
           ) : (
             logs.map((log) => (
               <TableRow key={log.id} className="group hover:bg-surface-container-low/20 transition-all duration-150 border-b border-outline-variant/40">
-                <TableCell className="!py-2 !px-6">
+                <TableCell className="!py-2.5 !px-6">
                   <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shadow-xs ${log.avatarBg}`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ring-1 ring-inset ring-on-surface/5 ${log.avatarBg}`}>
                       {log.initials}
                     </div>
                     <span className="font-semibold text-on-surface group-hover:text-secondary transition-colors text-body-sm">
@@ -48,14 +48,15 @@ export const AttendanceLogsTable: React.FC<AttendanceLogsTableProps> = ({ logs }
                 <TableCell className="!py-2 !px-6 text-on-surface-variant text-body-sm">
                   {log.area || '-'}
                 </TableCell>
-                <TableCell className="!py-2 !px-6 text-right">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full font-sans text-[10px] font-bold uppercase tracking-wider ${
+                <TableCell className="!py-2.5 !px-6 text-right">
+                  <span className={`inline-flex items-center gap-1.5 pl-2 pr-2.5 py-1 rounded-full font-sans text-label-sm font-semibold ${
                     log.status === 'Present' || log.status === 'Success'
-                      ? 'bg-success-container text-on-success-container border border-on-success-container/15'
+                      ? 'bg-success-container text-on-success-container'
                       : log.status === 'Late'
-                        ? 'bg-warning-container text-on-warning-container border border-on-warning-container/15'
-                        : 'bg-error-container text-on-error-container border border-error/20'
+                        ? 'bg-warning-container text-on-warning-container'
+                        : 'bg-error-container text-on-error-container'
                   }`}>
+                    <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
                     {log.status}
                   </span>
                 </TableCell>

@@ -40,16 +40,16 @@ export class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="flex flex-col items-center justify-center min-h-[60vh] p-6 text-center select-none font-sans">
-          <div className="p-4 bg-error-container/20 border border-error/30 rounded-2xl flex items-center justify-center mb-6">
-            <AlertTriangle className="w-12 h-12 text-error" />
+          <div className="w-16 h-16 bg-error-container border border-error/20 rounded-2xl flex items-center justify-center mb-6 shadow-sm">
+            <AlertTriangle className="w-8 h-8 text-error" />
           </div>
-          <h1 className="text-title-md font-semibold text-primary mb-2">Something went wrong</h1>
+          <h1 className="text-title-md font-bold text-primary mb-2 tracking-tight">Something went wrong</h1>
           <p className="text-on-surface-variant max-w-md mb-6 text-body-sm leading-relaxed">
             An unexpected error occurred during rendering. Details: {this.state.error?.message || 'Unknown Error'}
           </p>
           <button
             onClick={this.handleReset}
-            className="flex items-center gap-2 px-5 py-2.5 bg-secondary hover:bg-on-secondary-fixed-variant active:scale-95 text-on-secondary font-semibold rounded-lg transition-all duration-200 shadow-sm text-label-md cursor-pointer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-secondary hover:bg-on-secondary-fixed-variant active:scale-[0.97] text-on-secondary font-semibold rounded-lg transition-all duration-200 shadow-sm shadow-secondary/25 hover:shadow-md text-label-md cursor-pointer"
           >
             <RefreshCw className="w-4 h-4" />
             Reload Application

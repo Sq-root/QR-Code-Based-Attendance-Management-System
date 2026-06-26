@@ -8,22 +8,25 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className = '', variant = 'default', size = 'default', ...props }, ref) => {
     const baseClasses =
-      'inline-flex items-center justify-center gap-2 whitespace-nowrap font-sans font-semibold transition-all duration-200 active:scale-95 disabled:pointer-events-none disabled:opacity-50 cursor-pointer shadow-sm';
+      'inline-flex items-center justify-center gap-2 whitespace-nowrap font-sans font-semibold tracking-tight transition-all duration-200 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/55 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-container-lowest';
 
     const variantClasses = {
-      default: 'bg-secondary text-on-secondary hover:bg-on-secondary-fixed-variant',
+      default:
+        'bg-secondary text-on-secondary shadow-sm shadow-secondary/25 hover:bg-on-secondary-fixed-variant hover:shadow-md hover:shadow-secondary/25',
       secondary:
-        'bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface hover:text-primary',
-      outline: 'bg-transparent border border-outline text-on-surface hover:bg-surface-container',
-      ghost: 'bg-transparent text-on-surface-variant hover:text-primary hover:bg-surface-container',
-      destructive: 'bg-error text-on-error hover:bg-opacity-95',
+        'bg-surface-container-lowest hover:bg-surface-container border border-outline-variant text-on-surface hover:text-primary shadow-xs hover:shadow-sm',
+      outline:
+        'bg-transparent border border-outline-variant text-on-surface hover:bg-surface-container hover:border-outline',
+      ghost: 'bg-transparent text-on-surface-variant hover:text-on-surface hover:bg-surface-container',
+      destructive:
+        'bg-error text-on-error shadow-sm shadow-error/25 hover:bg-on-error-container hover:shadow-md',
     };
 
     const sizeClasses = {
-      sm: 'h-9 px-4 rounded-md text-xs',
+      sm: 'h-9 px-4 rounded-lg text-xs',
       default: 'h-12 px-6 rounded-lg text-label-md',
       lg: 'h-14 px-8 rounded-xl text-body-lg',
-      icon: 'h-9 w-9 p-0 rounded-md',
+      icon: 'h-9 w-9 p-0 rounded-lg',
     };
 
     const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;

@@ -176,13 +176,13 @@ export const ScannerOverlay: React.FC<ScannerOverlayProps> = ({
         >
           <X className="w-5 h-5 text-white" />
         </button>
-        <div className="font-title-md text-white font-bold tracking-tight">{APP_NAME} View</div>
+        <div className="text-title-md text-white font-bold tracking-tight">{APP_NAME} View</div>
         <div className="w-12" />
       </div>
 
       {/* Viewfinder */}
       <div className="relative z-10 w-full flex flex-col items-center justify-center flex-1 pb-16">
-        <p className="font-body-sm text-white text-center mb-8 px-6 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md text-[13px] font-medium tracking-wide z-20">
+        <p className="text-white text-center mb-8 px-6 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-md text-[13px] font-medium tracking-wide z-20">
           {isScanning ? "Position the QR code within the frame" : "Attendance verified successfully!"}
         </p>
 
@@ -203,7 +203,7 @@ export const ScannerOverlay: React.FC<ScannerOverlayProps> = ({
             <div className={`absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 rounded-br-xl ${cornerColor}`} />
 
             {isScanning && (
-              <div className="absolute top-0 left-0 w-full h-1 bg-secondary shadow-[0_0_10px_#0051d5] opacity-85 animate-[bounce_2s_infinite_ease-in-out]" />
+              <div className="absolute top-0 left-0 w-full h-1 bg-secondary shadow-[0_0_12px_#4f46e5] opacity-90 animate-[bounce_2s_infinite_ease-in-out]" />
             )}
 
             <div className="absolute inset-0 flex items-center justify-center">

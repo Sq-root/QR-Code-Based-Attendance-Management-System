@@ -36,64 +36,79 @@
   --font-sans: "Poppins", sans-serif;
   --font-mono: "Geist Mono", monospace;
 
-  /* Precision Presence Design System - QR Scan Attendance Pro */
-  /* Colors */
-  --color-surface: #f7f9fb;
-  --color-surface-dim: #d8dadc;
-  --color-surface-bright: #f7f9fb;
+  /* ───────────────────────────────────────────────────────────────
+     Aksent Design System — "Indigo Slate"
+     Cool neutral slate surfaces · confident indigo accent ·
+     emerald for positive/attendance states. Light theme.
+     Token NAMES are preserved app-wide; only VALUES are tuned.
+     ─────────────────────────────────────────────────────────────── */
+
+  /* Neutral surface ramp — cool slate, soft and clean */
+  --color-surface: #f5f7fa;
+  --color-surface-dim: #d3d9e3;
+  --color-surface-bright: #ffffff;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f2f4f6;
-  --color-surface-container: #eceef0;
-  --color-surface-container-high: #e6e8ea;
-  --color-surface-container-highest: #e0e3e5;
-  --color-on-surface: #191c1e;
-  --color-on-surface-variant: #45464d;
-  --color-inverse-surface: #2d3133;
-  --color-inverse-on-surface: #eff1f3;
-  --color-outline: #76777d;
-  --color-outline-variant: #c6c6cd;
-  --color-surface-tint: #565e74;
-  --color-primary: #131b2e;
+  --color-surface-container-low: #f1f4f9;
+  --color-surface-container: #e9eef5;
+  --color-surface-container-high: #e1e8f1;
+  --color-surface-container-highest: #d8e1ec;
+  --color-on-surface: #16203a;
+  --color-on-surface-variant: #56617a;
+  --color-inverse-surface: #232c44;
+  --color-inverse-on-surface: #f1f4f9;
+  --color-outline: #8893a8;
+  --color-outline-variant: #e3e8f0;
+  --color-surface-tint: #4f46e5;
+
+  /* Primary — deep indigo-slate "ink" (headings, brand, scrims) */
+  --color-primary: #1d2742;
   --color-on-primary: #ffffff;
-  --color-primary-container: #131b2e;
-  --color-on-primary-container: #7c839b;
-  --color-inverse-primary: #bec6e0;
-  --color-secondary: #0051d5;
+  --color-primary-container: #1d2742;
+  --color-on-primary-container: #6b7693;
+  --color-inverse-primary: #bcc4ec;
+
+  /* Secondary — the interactive indigo accent (buttons, links, focus) */
+  --color-secondary: #4f46e5;
   --color-on-secondary: #ffffff;
-  --color-secondary-container: #316bf3;
-  --color-on-secondary-container: #fefcff;
-  --color-tertiary: #131b2e;
+  --color-secondary-container: #c9cdfb;
+  --color-on-secondary-container: #1e2275;
+
+  /* Tertiary — emerald (positive / present / attendance) */
+  --color-tertiary: #047857;
   --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #002113;
-  --color-on-tertiary-container: #009668;
+  --color-tertiary-container: #d1fae5;
+  --color-on-tertiary-container: #065f46;
 
   /* Semantic status — single source of truth for attendance states */
   --color-success: #059669;
   --color-on-success: #ffffff;
-  --color-success-container: #d1fae5;
+  --color-success-container: #d6f6e5;
   --color-on-success-container: #065f46;
   --color-warning: #d97706;
   --color-on-warning: #ffffff;
-  --color-warning-container: #fef3c7;
+  --color-warning-container: #fdf0d5;
   --color-on-warning-container: #92400e;
-  --color-error: #ba1a1a;
+  --color-error: #dc2626;
   --color-on-error: #ffffff;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #93000a;
-  --color-primary-fixed: #dae2fd;
-  --color-primary-fixed-dim: #bec6e0;
-  --color-on-primary-fixed: #131b2e;
-  --color-on-primary-fixed-variant: #3f465c;
-  --color-secondary-fixed: #dbe1ff;
-  --color-secondary-fixed-dim: #b4c5ff;
-  --color-on-secondary-fixed: #00174b;
-  --color-on-secondary-fixed-variant: #003ea8;
-  --color-tertiary-fixed: #6ffbbe;
-  --color-tertiary-fixed-dim: #4edea3;
-  --color-on-tertiary-fixed: #002113;
-  --color-on-tertiary-fixed-variant: #005236;
-  --color-background: #f7f9fb;
-  --color-on-background: #191c1e;
+  --color-error-container: #fde4e4;
+  --color-on-error-container: #991b1b;
+
+  /* Fixed roles — light accent fills + dark accent text (chips, avatars, soft buttons) */
+  --color-primary-fixed: #dee3fb;
+  --color-primary-fixed-dim: #c2c9f4;
+  --color-on-primary-fixed: #1d2742;
+  --color-on-primary-fixed-variant: #3b4577;
+  --color-secondary-fixed: #e0e3fe;
+  --color-secondary-fixed-dim: #c4cafc;
+  --color-on-secondary-fixed: #14155a;
+  --color-on-secondary-fixed-variant: #3730c4;
+  --color-tertiary-fixed: #c6f3dd;
+  --color-tertiary-fixed-dim: #a2e7c5;
+  --color-on-tertiary-fixed: #00271a;
+  --color-on-tertiary-fixed-variant: #096a4a;
+
+  --color-background: #f5f7fa;
+  --color-on-background: #16203a;
 
   /* Typography */
   --text-display-lg: 48px;
@@ -124,8 +139,13 @@
 
   --text-label-md: 12px;
   --text-label-md--line-height: 16px;
-  --text-label-md--letter-spacing: 0.05em;
+  --text-label-md--letter-spacing: 0.04em;
   --text-label-md--font-weight: 600;
+
+  --text-label-sm: 11px;
+  --text-label-sm--line-height: 16px;
+  --text-label-sm--letter-spacing: 0.03em;
+  --text-label-sm--font-weight: 600;
 
   --text-mono-code: 14px;
   --text-mono-code--line-height: 20px;
@@ -146,34 +166,73 @@
   --spacing-margin-mobile: 16px;
   --spacing-margin-desktop: 40px;
   --spacing-stack-gap: 16px;
+
+  /* Elevation — soft, layered, cool-tinted shadows for a refined depth.
+     Overrides Tailwind's shadow-* utilities globally. */
+  --shadow-2xs: 0 1px 2px 0 rgb(20 28 56 / 0.04);
+  --shadow-xs: 0 1px 2px 0 rgb(20 28 56 / 0.06);
+  --shadow-sm: 0 1px 3px 0 rgb(20 28 56 / 0.07), 0 1px 2px -1px rgb(20 28 56 / 0.05);
+  --shadow-md: 0 6px 16px -4px rgb(20 28 56 / 0.10), 0 2px 6px -2px rgb(20 28 56 / 0.06);
+  --shadow-lg: 0 14px 32px -8px rgb(20 28 56 / 0.14), 0 4px 10px -4px rgb(20 28 56 / 0.07);
+  --shadow-xl: 0 28px 56px -12px rgb(20 28 56 / 0.20), 0 8px 18px -8px rgb(20 28 56 / 0.10);
+  --shadow-2xl: 0 40px 80px -16px rgb(20 28 56 / 0.28);
+
+  /* Accent-tinted ring for focus states */
+  --color-ring: #4f46e5;
 }
 
 /* Custom base styles in Tailwind v4 are styled via standard CSS selectors or utility directives */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   background-color: var(--color-background);
   color: var(--color-on-background);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Text selection — subtle accent tint */
+::selection {
+  background-color: color-mix(in srgb, var(--color-secondary) 22%, transparent);
+  color: var(--color-on-surface);
+}
+
+/* Keyboard focus — consistent accent ring across interactive elements */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
 
 /* Custom Scrollbar for modern visual appearance */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-surface-container);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-surface-dim);
   border-radius: 9999px;
-  border: 2px solid var(--color-surface-container);
+  border: 3px solid transparent;
+  background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-outline);
+  background-clip: padding-box;
+  border: 3px solid transparent;
+}
+
+* {
+  scrollbar-color: var(--color-surface-dim) transparent;
 }
 
 /* Fade in animation utility */

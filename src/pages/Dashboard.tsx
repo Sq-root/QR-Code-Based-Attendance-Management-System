@@ -357,7 +357,7 @@ export const Dashboard: React.FC = () => {
               <h2 className="text-headline-lg-mobile md:text-headline-lg font-bold text-primary tracking-tight font-sans">
                 Overview
               </h2>
-              <p className="md:hidden text-body-sm text-on-surface-variant mt-0.5 font-sans">
+              <p className="text-body-sm text-on-surface-variant mt-1 font-sans">
                 Real-time attendance metrics and updates.
               </p>
             </div>
@@ -393,14 +393,14 @@ export const Dashboard: React.FC = () => {
           <div className="grid grid-cols-2 gap-4 md:hidden">
             <button
               onClick={handleOpenScanner}
-              className="bg-secondary text-on-secondary rounded-xl p-4 flex flex-col items-center justify-center gap-2 shadow-xs active:opacity-90 transition-opacity cursor-pointer"
+              className="bg-linear-to-br from-secondary to-on-secondary-fixed-variant text-on-secondary rounded-2xl p-5 flex flex-col items-center justify-center gap-2.5 shadow-sm shadow-secondary/25 active:scale-[0.98] transition-transform cursor-pointer"
             >
               <ScanLine className="w-6 h-6 text-on-secondary" />
               <span className="font-sans text-label-md font-bold">Scan QR</span>
             </button>
             <button
               onClick={() => navigate(ROUTES.NEW_ATTENDEE)}
-              className="bg-surface-container-lowest border border-outline-variant text-on-surface rounded-xl p-4 flex flex-col items-center justify-center gap-2 shadow-xs active:bg-surface-container-low transition-colors cursor-pointer"
+              className="bg-surface-container-lowest border border-outline-variant text-on-surface rounded-2xl p-5 flex flex-col items-center justify-center gap-2.5 shadow-xs active:bg-surface-container-low active:scale-[0.98] transition-all cursor-pointer"
             >
               <Plus className="w-6 h-6 text-secondary" />
               <span className="font-sans text-label-md font-bold">
@@ -429,7 +429,7 @@ export const Dashboard: React.FC = () => {
       {/* FAB (Floating Action Button) for Desktop (Scan QR Code shortcut) */}
       <button
         onClick={handleOpenScanner}
-        className="hidden md:flex fixed bottom-8 right-8 w-16 h-16 bg-secondary text-on-secondary rounded-2xl items-center justify-center shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-200 z-30 cursor-pointer active:scale-95"
+        className="hidden md:flex fixed bottom-8 right-8 w-16 h-16 bg-linear-to-br from-secondary to-on-secondary-fixed-variant text-on-secondary rounded-2xl items-center justify-center shadow-lg shadow-secondary/35 hover:-translate-y-1 hover:shadow-xl hover:shadow-secondary/40 transition-all duration-200 z-30 cursor-pointer active:scale-95"
         title="Open QR Scanner"
       >
         <ScanLine className="w-7 h-7 text-on-secondary animate-pulse" />

@@ -16,12 +16,12 @@ export const AttendeesFiltersBar: React.FC<AttendeesFiltersBarProps> = React.mem
   totalCount,
 }) => {
   return (
-    <div className="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 space-y-4">
+    <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-sm p-5 space-y-4">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-title-md font-semibold text-on-surface">Registered Attendees</h3>
-          <p className="text-body-sm text-on-surface-variant mt-0.5">
-            {totalCount} attendee{totalCount !== 1 ? 's' : ''} total
+          <h3 className="text-title-md font-bold text-on-surface tracking-tight">Registered Attendees</h3>
+          <p className="text-body-sm text-on-surface-variant mt-1">
+            <span className="font-semibold text-on-surface tabular-nums">{totalCount}</span> attendee{totalCount !== 1 ? 's' : ''} total
           </p>
         </div>
 

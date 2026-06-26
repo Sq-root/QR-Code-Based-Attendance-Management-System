@@ -97,12 +97,13 @@ const router = createHashRouter([
   {
     path: '*',
     element: (
-      <div className="flex flex-col items-center justify-center min-h-[80vh] text-center p-6 select-none font-sans">
-        <h1 className="text-display-lg text-on-background mb-2">404</h1>
-        <p className="text-on-surface-variant mb-6 text-body-sm">The requested route does not exist.</p>
+      <div className="flex flex-col items-center justify-center min-h-[80vh] text-center p-6 select-none font-sans bg-surface">
+        <p className="text-label-md font-semibold uppercase tracking-[0.18em] text-secondary mb-3">Page not found</p>
+        <h1 className="text-display-lg font-bold text-primary mb-2 tracking-tight">404</h1>
+        <p className="text-on-surface-variant mb-7 text-body-lg">The requested route does not exist.</p>
         <a
           href={ROUTES.HOME}
-          className="px-4 py-2 bg-secondary hover:opacity-90 text-on-secondary rounded-DEFAULT text-label-md transition-all font-sans font-semibold shadow-sm"
+          className="inline-flex items-center px-5 py-2.5 bg-secondary hover:bg-on-secondary-fixed-variant text-on-secondary rounded-lg text-label-md transition-all duration-200 font-sans font-semibold shadow-sm shadow-secondary/25 hover:shadow-md"
         >
           Return Home
         </a>

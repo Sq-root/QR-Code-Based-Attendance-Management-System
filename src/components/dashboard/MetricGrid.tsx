@@ -1,6 +1,7 @@
 import React from 'react';
-import { Card, CardContent } from '../ui/card';
+import { Card } from '../ui/card';
 import { Users, UserCheck, Percent } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 interface MetricGridProps {
   totalRegistered?: string;
@@ -8,58 +9,58 @@ interface MetricGridProps {
   attendanceRate?: string;
 }
 
+interface MetricCell {
+  label: string;
+  value: string | number;
+  icon: LucideIcon;
+  iconWrap: string;
+}
+
 export const MetricGrid: React.FC<MetricGridProps> = ({
   totalRegistered = "-",
   presentToday = "-",
   attendanceRate = "-",
 }) => {
+  const metrics: MetricCell[] = [
+    {
+      label: "Registered",
+      value: totalRegistered,
+      icon: Users,
+      iconWrap: "bg-secondary/10 text-secondary",
+    },
+    {
+      label: "Present",
+      value: presentToday,
+      icon: UserCheck,
+      iconWrap: "bg-tertiary-fixed text-on-tertiary-fixed-variant",
+    },
+    {
+      label: "Rate",
+      value: attendanceRate,
+      icon: Percent,
+      iconWrap: "bg-secondary/10 text-secondary",
+    },
+  ];
+
   return (
-    <Card className="rounded-lg border-outline-variant shadow-sm overflow-hidden">
-      <CardContent className="p-0">
-        <div className="grid grid-cols-3 divide-x divide-outline-variant">
-          <div className="min-w-0 p-3 sm:p-4">
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg bg-secondary/10 border border-secondary/10 shrink-0 flex items-center justify-center">
-                <Users className="w-4 h-4 text-primary" />
+    <Card className="overflow-hidden">
+      <div className="grid grid-cols-3 divide-x divide-outline-variant">
+        {metrics.map(({ label, value, icon: Icon, iconWrap }) => (
+          <div key={label} className="min-w-0 p-4 sm:p-5 transition-colors hover:bg-surface-container-low/60">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className={`h-8 w-8 sm:h-9 sm:w-9 rounded-xl shrink-0 flex items-center justify-center ${iconWrap}`}>
+                <Icon className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
               </div>
-              <span className="text-[10px] sm:text-label-md font-semibold text-on-surface-variant uppercase font-sans truncate">
-                Registered
+              <span className="text-[10px] sm:text-label-md font-semibold text-on-surface-variant uppercase tracking-wide font-sans truncate">
+                {label}
               </span>
             </div>
-            <div className="text-xl sm:text-2xl font-bold text-on-surface font-sans leading-none mt-3">
-              {totalRegistered}
+            <div className="text-2xl sm:text-3xl font-bold text-on-surface font-sans leading-none mt-3.5 tracking-tight tabular-nums">
+              {value}
             </div>
           </div>
-
-          <div className="min-w-0 p-3 sm:p-4">
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg bg-tertiary-fixed/20 border border-on-tertiary-container/10 shrink-0 flex items-center justify-center">
-                <UserCheck className="w-4 h-4 text-on-tertiary-container" />
-              </div>
-              <span className="text-[10px] sm:text-label-md font-semibold text-on-surface-variant uppercase font-sans truncate">
-                Present
-              </span>
-            </div>
-            <div className="text-xl sm:text-2xl font-bold text-on-surface font-sans leading-none mt-3">
-              {presentToday}
-            </div>
-          </div>
-
-          <div className="min-w-0 p-3 sm:p-4">
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg bg-secondary/10 border border-secondary/10 shrink-0 flex items-center justify-center">
-                <Percent className="w-4 h-4 text-secondary" />
-              </div>
-              <span className="text-[10px] sm:text-label-md font-semibold text-on-surface-variant uppercase font-sans truncate">
-                Rate
-              </span>
-            </div>
-            <div className="text-xl sm:text-2xl font-bold text-on-surface font-sans leading-none mt-3">
-              {attendanceRate}
-            </div>
-          </div>
-        </div>
-      </CardContent>
+        ))}
+      </div>
     </Card>
   );
 };

@@ -22,13 +22,13 @@ export const PaginationBar: React.FC<PaginationBarProps> = ({
   onNextPage
 }) => {
   return (
-    <div className="px-6 py-3.5 flex flex-col sm:flex-row justify-between items-center gap-4 bg-surface-container-lowest text-body-sm font-sans font-medium text-on-surface-variant select-none">
+    <div className="px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4 bg-surface-container-lowest border-t border-outline-variant text-body-sm font-sans font-medium text-on-surface-variant select-none">
       <div>
         {totalItems > 0 ? (
           <>
-            Showing <span className="text-on-surface font-semibold">{startIndex + 1}</span> to{' '}
-            <span className="text-on-surface font-semibold">{endIndex}</span> of{' '}
-            <span className="text-on-surface font-semibold">{totalItems}</span> entries
+            Showing <span className="text-on-surface font-semibold tabular-nums">{startIndex + 1}</span> to{' '}
+            <span className="text-on-surface font-semibold tabular-nums">{endIndex}</span> of{' '}
+            <span className="text-on-surface font-semibold tabular-nums">{totalItems}</span> entries
           </>
         ) : (
           'Showing 0 to 0 of 0 entries'
@@ -41,14 +41,16 @@ export const PaginationBar: React.FC<PaginationBarProps> = ({
           size="icon"
           onClick={onPrevPage}
           disabled={currentPage === 1 || totalItems === 0}
-          className="h-8 w-8 flex items-center justify-center border border-outline-variant hover:bg-surface-container disabled:opacity-30 disabled:pointer-events-none transition-all"
+          className="h-9 w-9 flex items-center justify-center disabled:opacity-40 disabled:pointer-events-none"
           aria-label="Previous Page"
         >
           <ChevronLeft className="w-4 h-4" />
         </Button>
 
-        <div className="text-body-sm font-semibold text-on-surface px-2">
-          Page {currentPage} of {totalPages}
+        <div className="px-3.5 py-1.5 bg-surface-container-low rounded-lg border border-outline-variant min-w-max">
+          <span className="text-body-sm font-semibold text-on-surface tabular-nums">
+            {currentPage} <span className="text-on-surface-variant font-normal">of</span> {totalPages}
+          </span>
         </div>
 
         <Button
@@ -56,7 +58,7 @@ export const PaginationBar: React.FC<PaginationBarProps> = ({
           size="icon"
           onClick={onNextPage}
           disabled={currentPage === totalPages || totalItems === 0}
-          className="h-8 w-8 flex items-center justify-center border border-outline-variant hover:bg-surface-container disabled:opacity-30 disabled:pointer-events-none transition-all"
+          className="h-9 w-9 flex items-center justify-center disabled:opacity-40 disabled:pointer-events-none"
           aria-label="Next Page"
         >
           <ChevronRight className="w-4 h-4" />

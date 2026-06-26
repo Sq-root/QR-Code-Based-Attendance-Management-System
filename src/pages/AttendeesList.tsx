@@ -193,7 +193,7 @@ const AttendeesList: React.FC = () => {
           totalCount={attendeesQuery.data?.length || 0}
         />
 
-        <div className="sm:bg-surface-container-lowest sm:border sm:border-outline-variant sm:rounded-lg sm:overflow-hidden">
+        <div className="sm:bg-surface-container-lowest sm:border sm:border-outline-variant sm:rounded-2xl sm:shadow-sm sm:overflow-hidden">
           <div className="hidden sm:block">
             <AttendeesTable
               attendees={paginatedAttendees}
@@ -230,7 +230,7 @@ const AttendeesList: React.FC = () => {
                       attendee.pass?.passId ??
                       [displayId, attendee.pass?.eventSessionId, index].filter(Boolean).join('-')
                     }
-                    className="bg-surface-container-lowest rounded-xl border border-outline-variant px-4 py-3 shadow-sm hover:shadow-md transition-shadow"
+                    className="bg-surface-container-lowest rounded-2xl border border-outline-variant px-4 py-4 shadow-sm hover:shadow-md transition-shadow"
                   >
                     <div className="space-y-3">
                       <div>
@@ -243,11 +243,11 @@ const AttendeesList: React.FC = () => {
                           </p>
                         </div>
 
-                        <div className="space-y-2 pt-3 border-t border-outline-variant/60">
+                        <div className="space-y-2 pt-3 border-t border-outline-variant">
                           <div className="flex items-center justify-between gap-2">
                             <span className="text-on-surface-variant font-semibold text-xs">Child</span>
                             {attendee.youthName ? (
-                              <span className="bg-secondary/10 text-secondary px-2.5 py-1 rounded-md font-semibold text-xs">
+                              <span className="bg-secondary/10 text-secondary px-2.5 py-1 rounded-lg font-semibold text-xs">
                                 {attendee.youthName}
                               </span>
                             ) : (
@@ -279,7 +279,7 @@ const AttendeesList: React.FC = () => {
                         <button
                           onClick={() => handleQrClick(attendee)}
                           disabled={isQrLoading || isAttendanceLoading}
-                          className={`flex-1 inline-flex items-center justify-center gap-1.5 px-2 py-2 rounded-md text-xs font-medium transition-all duration-200 cursor-pointer ${
+                          className={`flex-1 inline-flex items-center justify-center gap-1.5 px-2 py-2.5 rounded-lg text-xs font-semibold transition-all duration-200 cursor-pointer ${
                             isQrSuccess
                               ? 'bg-success text-on-success hover:bg-on-success-container'
                               : 'bg-secondary text-on-secondary hover:bg-on-secondary-fixed-variant'
@@ -298,7 +298,7 @@ const AttendeesList: React.FC = () => {
                         <button
                           onClick={() => handleAttendanceClick(attendee)}
                           disabled={isQrLoading || isAttendanceLoading}
-                          className={`flex-1 inline-flex items-center justify-center gap-1.5 px-2 py-2 rounded-md text-xs font-medium transition-all duration-200 cursor-pointer ${
+                          className={`flex-1 inline-flex items-center justify-center gap-1.5 px-2 py-2.5 rounded-lg text-xs font-semibold transition-all duration-200 cursor-pointer ${
                             isAttendanceSuccess
                               ? 'bg-success text-on-success hover:bg-on-success-container'
                               : 'bg-tertiary-fixed-dim text-on-tertiary-fixed-variant hover:bg-tertiary-fixed'

@@ -38,10 +38,14 @@ export const AttendanceLogsCard: React.FC<AttendanceLogsCardProps> = ({
 }) => {
   return (
     <Card className="shadow-sm overflow-hidden flex flex-col">
-      <div className="px-6 py-3.5 border-b border-outline-variant/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface-container-lowest">
+      <div className="px-6 py-4 border-b border-outline-variant flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface-container-lowest">
         <div className="flex items-center gap-3">
-          <h3 className="text-body-lg font-bold text-primary font-sans">Attendance Logs</h3>
-          <span className="text-label-md font-mono text-secondary bg-secondary/10 px-2 py-0.5 rounded-md border border-secondary/15 font-semibold">
+          <h3 className="text-title-md font-bold text-on-surface font-sans tracking-tight">Attendance Logs</h3>
+          <span className="inline-flex items-center gap-1.5 text-label-sm text-on-success-container bg-success-container/70 px-2.5 py-1 rounded-full border border-on-tertiary-fixed-variant/15 font-semibold">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-success opacity-60" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-success" />
+            </span>
             Live Feed
           </span>
         </div>
@@ -55,7 +59,7 @@ export const AttendanceLogsCard: React.FC<AttendanceLogsCardProps> = ({
               placeholder="Search attendee or session..."
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full sm:w-64 pl-9 pr-8 py-2 border border-outline-variant bg-surface-container-lowest rounded-lg text-body-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors font-sans"
+              className="w-full sm:w-64 h-10 pl-9 pr-8 border border-outline-variant bg-surface-container-lowest rounded-lg text-body-sm text-on-surface placeholder:text-on-surface-variant outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/15 transition-all font-sans"
             />
             {searchQuery && (
               <button

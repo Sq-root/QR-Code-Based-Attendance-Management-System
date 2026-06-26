@@ -1,4 +1,5 @@
 import React from "react";
+import { ChevronDown } from "lucide-react";
 import type { UseFormRegisterReturn } from "react-hook-form";
 
 interface BaseFieldProps {
@@ -32,13 +33,13 @@ const FieldShell: React.FC<
   <div className={`space-y-1.5 ${className}`}>
     <label
       htmlFor={registration.name}
-      className="text-label-md font-semibold text-on-surface"
+      className="block text-body-sm font-semibold text-on-surface"
     >
       {label}
-      {required && <span className="text-error ml-1">*</span>}
+      {required && <span className="text-error ml-0.5">*</span>}
     </label>
     {children}
-    {error && <p className="text-label-md font-normal text-error">{error}</p>}
+    {error && <p className="text-xs font-medium text-error">{error}</p>}
   </div>
 );
 
@@ -63,7 +64,7 @@ export const RegisteredTextField: React.FC<RegisteredTextFieldProps> = ({
       {...registration}
       disabled={disabled}
       aria-invalid={Boolean(error)}
-      className={`w-full h-11 rounded-lg border bg-surface-container-lowest px-3 text-body-sm text-on-surface outline-none placeholder:text-outline disabled:opacity-60 ${inputStateClasses(
+      className={`w-full h-11 rounded-lg border bg-surface-container-lowest px-3.5 text-body-sm text-on-surface outline-none transition-all duration-200 placeholder:text-outline disabled:opacity-60 disabled:cursor-not-allowed ${inputStateClasses(
         Boolean(error),
       )}`}
       placeholder={placeholder}
@@ -88,21 +89,24 @@ export const RegisteredSelectField: React.FC<RegisteredSelectFieldProps> = ({
     error={error}
     className={className}
   >
-    <select
-      id={registration.name}
-      {...registration}
-      disabled={disabled}
-      aria-invalid={Boolean(error)}
-      className={`w-full h-11 rounded-lg border bg-surface-container-lowest px-3 text-body-sm text-on-surface outline-none disabled:opacity-60 ${inputStateClasses(
-        Boolean(error),
-      )}`}
-    >
-      <option value="">{placeholder}</option>
-      {options.map((option) => (
-        <option key={option} value={option}>
-          {option}
-        </option>
-      ))}
-    </select>
+    <div className="relative">
+      <select
+        id={registration.name}
+        {...registration}
+        disabled={disabled}
+        aria-invalid={Boolean(error)}
+        className={`w-full h-11 rounded-lg border bg-surface-container-lowest pl-3.5 pr-10 text-body-sm text-on-surface outline-none transition-all duration-200 appearance-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed ${inputStateClasses(
+          Boolean(error),
+        )}`}
+      >
+        <option value="">{placeholder}</option>
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+      <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-on-surface-variant" />
+    </div>
   </FieldShell>
 );

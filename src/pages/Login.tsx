@@ -57,15 +57,15 @@ export const Login: React.FC = () => {
       {/* ── LEFT PANEL — desktop only ─────────────────── */}
       <div className="hidden lg:flex lg:w-[52%] relative flex-col justify-between p-14 overflow-hidden bg-surface-container-lowest border-r border-outline-variant">
 
-        {/* Subtle blue blob top-left */}
-        <div className="pointer-events-none absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full blur-[140px] opacity-40"
-          style={{ background: 'radial-gradient(circle, #dbe1ff 0%, transparent 70%)' }} />
-        <div className="pointer-events-none absolute bottom-0 right-0 w-[350px] h-[350px] rounded-full blur-[120px] opacity-30"
-          style={{ background: 'radial-gradient(circle, #dae2fd 0%, transparent 70%)' }} />
+        {/* Subtle indigo glow blobs */}
+        <div className="pointer-events-none absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full blur-[140px] opacity-50"
+          style={{ background: 'radial-gradient(circle, #d4d8ff 0%, transparent 70%)' }} />
+        <div className="pointer-events-none absolute bottom-0 right-0 w-[350px] h-[350px] rounded-full blur-[120px] opacity-40"
+          style={{ background: 'radial-gradient(circle, #dcd9ff 0%, transparent 70%)' }} />
 
         {/* Brand top */}
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center shadow-md">
+          <div className="w-11 h-11 rounded-2xl bg-linear-to-br from-secondary to-on-secondary-fixed-variant flex items-center justify-center shadow-lg shadow-secondary/30">
             <QrCode className="w-5 h-5 text-on-secondary" />
           </div>
           <span className="text-xl font-bold text-on-surface tracking-tight">{APP_NAME}</span>
@@ -104,14 +104,14 @@ export const Login: React.FC = () => {
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 relative overflow-hidden">
 
         {/* Very subtle bg accent */}
-        <div className="pointer-events-none absolute top-0 right-0 w-[300px] h-[300px] rounded-full blur-[120px] opacity-40"
-          style={{ background: 'radial-gradient(circle, #dbe1ff 0%, transparent 70%)' }} />
+        <div className="pointer-events-none absolute top-0 right-0 w-[300px] h-[300px] rounded-full blur-[120px] opacity-40 lg:hidden"
+          style={{ background: 'radial-gradient(circle, #d4d8ff 0%, transparent 70%)' }} />
 
         <div className="w-full max-w-[400px] relative z-10 flex flex-col gap-6">
 
           {/* Mobile brand header */}
           <div className="lg:hidden flex flex-col items-center gap-3 text-center">
-            <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center shadow-lg">
+            <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-secondary to-on-secondary-fixed-variant flex items-center justify-center shadow-lg shadow-secondary/30">
               <QrCode className="w-7 h-7 text-on-secondary" />
             </div>
             <div>
@@ -121,7 +121,7 @@ export const Login: React.FC = () => {
           </div>
 
           {/* Form card */}
-          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant shadow-xl shadow-black/5 p-8 flex flex-col gap-6">
+          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant shadow-xl p-8 flex flex-col gap-6">
 
             <div>
               <h2 className="text-xl font-bold text-on-surface">Sign in</h2>
@@ -203,9 +203,6 @@ export const Login: React.FC = () => {
               </button>
             </form>
 
-            <p className="text-center text-xs text-on-surface-variant">
-              Demo: use any email &amp; password with 6+ characters
-            </p>
           </div>
 
           <p className="text-center text-xs text-on-surface-variant lg:hidden">

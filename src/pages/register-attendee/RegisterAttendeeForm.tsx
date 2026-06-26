@@ -1,6 +1,6 @@
 import React from "react";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import { Send } from "lucide-react";
+import { Send, UserPlus } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
   genderOptions,
@@ -29,8 +29,19 @@ export const RegisterAttendeeForm: React.FC<RegisterAttendeeFormProps> = ({
   <form
     noValidate
     onSubmit={onSubmit}
-    className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm p-5 md:p-6 space-y-6"
+    className="bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-sm overflow-hidden"
   >
+    <div className="flex items-center gap-3 px-5 md:px-6 py-4 border-b border-outline-variant bg-surface-container-low/50">
+      <div className="w-9 h-9 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center shrink-0">
+        <UserPlus className="w-4.5 h-4.5" />
+      </div>
+      <div>
+        <h3 className="text-body-lg font-bold text-on-surface tracking-tight leading-tight">Attendee Details</h3>
+        <p className="text-xs text-on-surface-variant mt-0.5">Fields marked * are required.</p>
+      </div>
+    </div>
+
+    <div className="p-5 md:p-6 space-y-6">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <RegisteredTextField
         label="Child full name"
@@ -139,6 +150,7 @@ export const RegisterAttendeeForm: React.FC<RegisterAttendeeFormProps> = ({
         <Send className="w-4 h-4" />
         {disabled ? "Registering..." : "Register Attendee"}
       </Button>
+    </div>
     </div>
   </form>
 );

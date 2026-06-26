@@ -36,15 +36,15 @@ export const AttendeesTable: React.FC<AttendeesTableProps> = React.memo(({
   }
 
   return (
-    <div className="overflow-x-auto border border-outline-variant rounded-lg">
+    <div className="overflow-x-auto">
       <Table>
         <TableHeader className="bg-surface-container-low sticky top-0 z-10">
-          <TableRow className="border-b border-outline-variant">
-            <TableHead className="!py-3 !px-6 font-semibold text-on-surface">Parent Name</TableHead>
-            <TableHead className="!py-3 !px-6 font-semibold text-on-surface">Phone</TableHead>
-            <TableHead className="!py-3 !px-6 font-semibold text-on-surface">Child Name</TableHead>
-            <TableHead className="!py-3 !px-6 font-semibold text-on-surface">Area</TableHead>
-            <TableHead className="!py-3 !px-6 font-semibold text-on-surface text-center">Action</TableHead>
+          <TableRow className="border-b border-outline-variant hover:bg-surface-container-low">
+            <TableHead className="!py-3.5 !px-6">Parent Name</TableHead>
+            <TableHead className="!py-3.5 !px-6">Phone</TableHead>
+            <TableHead className="!py-3.5 !px-6">Child Name</TableHead>
+            <TableHead className="!py-3.5 !px-6">Area</TableHead>
+            <TableHead className="!py-3.5 !px-6 text-center">Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
