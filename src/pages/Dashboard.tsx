@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Download, ScanLine, Plus } from "lucide-react";
+import { ScanLine, Plus } from "lucide-react";
 import { Button } from "../components/ui/button";
 import type { ActivityLog } from "../mock/attendanceData";
 import { AUTH_KEYS, EVENT_SESSION_ID, ROUTES } from "../constants";
@@ -370,14 +370,6 @@ export const Dashboard: React.FC = () => {
               >
                 <Plus className="w-4.5 h-4.5" />
                 Register Attendee
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="items-center gap-2 border border-outline-variant hover:bg-surface-container transition-all"
-              >
-                <Download className="w-4.5 h-4.5" />
-                Download Report
               </Button>
             </div>
           </div>
